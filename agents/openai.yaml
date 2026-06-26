@@ -1,0 +1,7 @@
+interface:
+  display_name: "GTM Container Audit Cleanup"
+  short_description: "Audit and clean GTM containers safely"
+  default_prompt: "Use $gtm-container-audit-cleanup to run a complete deep GTM audit by default, treat ambiguous Google events as GA4/current Google tag rather than UA, check official GA4/vendor event documentation as the payload contract, and when a vendor is not covered by the bundled references, search the internet for that vendor's official documentation before judging payload correctness. Flag missing standard events and dataLayer readiness blockers, then prepare full evidence-safe cleanup. Before any cleanup, choose aggressiveness, compile findings into a structured operation table, and ask whether approved cleanup should run directly in a new GTM workspace or produce an importable GTM container JSON. Prefer direct GTM/MCP/API cleanup when the user wants existing objects modified in place, naming standardization, deletion, or a readable GTM View Changes review. For same-container import JSON, preserve names for View Changes review or use conflict-aware replacement/additive objects with old-to-new decommission mapping when portability is more important than in-place review. Run route-specific script QA for generated JSON, and end every audit or completed workflow phase with a concrete recommended next step."
+
+policy:
+  allow_implicit_invocation: true
