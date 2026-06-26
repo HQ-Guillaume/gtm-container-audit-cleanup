@@ -88,6 +88,15 @@ deferred only when the user explicitly excludes it or when unclear business
 tokens make safe renaming impossible; in that case, document the blocker and the
 exact names that need owner clarification.
 
+Every proposed final name must be unique within its GTM object layer. GTM cannot
+reliably support duplicate names for tags, triggers, variables, or folders, and
+duplicate proposed names are poor maintenance practice. When two objects share
+the same vendor and event role, add a meaningful suffix such as scope, trigger
+event, page context, consent category, destination ID suffix, sequence role,
+market, product range, variant, or `Legacy`/`Paused`/`Decommission candidate`.
+Use an object ID suffix only as a temporary audit placeholder when the real
+business distinction is unknown, and mark the blocker.
+
 Treat Google Analytics/event/ecommerce tracking as GA4 or current Google tag
 tracking by default. Classify a Google analytics object as Universal Analytics
 only when the tag type, property ID, explicit user instruction, or verified
@@ -165,6 +174,10 @@ Before final delivery, run a final coverage check:
   scope, not only examples or high-risk objects. Mixed trigger prefixes such as
   `Didomi`, `Block`, `TR`, `TG`, and `Trigger` are resolved to the chosen
   convention or documented with object-level blockers.
+- Proposed and applied final names are unique within each layer. If a naming
+  pattern would produce duplicates, the plan adds meaningful suffixes that
+  explain the actual distinction between objects, or marks the affected names as
+  blocked pending business clarification.
 - No trigger group contains only one trigger after cleanup. Map every
   consuming tag directly to the child trigger, then delete the group for direct
   GTM/API or overwrite/new-container JSON. For same-container merge JSON, where
@@ -359,7 +372,9 @@ observed browser behavior over generic descriptions.
    use `Vendor - Event/role - Scope/detail` for tags, `Utility/type - Event or
    condition - Scope/detail` for triggers, and `VariableTypeAcronym - Variable
    name/source path` for variables. Decide final names before creating helpers,
-   reusable triggers, or replacement tags.
+   reusable triggers, or replacement tags. Validate proposed names for
+   uniqueness within each layer before publishing the audit plan, operation
+   table, rename map, or cleanup artifact.
 12. **Detect gateway and consolidation patterns**. Identify whether the container
    uses a one tag gateway, server-side gateway, lookup-table gateway, shared
    vendor loader, or repeated one-tag-per-market/event pattern. Cluster exact

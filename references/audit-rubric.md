@@ -247,6 +247,21 @@ Rules:
   `purchase`, `add_to_cart`, `ViewContent`, `AddToCart`, or `Purchase`.
 - Put market, country, language, product range, campaign, pixel ID suffix, or
   consent detail after the event/role, not before it.
+- Every proposed final name must be unique inside its GTM layer. Before
+  delivering an audit plan, cleanup operation table, rename map, or generated
+  JSON, group proposed names by layer and resolve collisions. Do not propose the
+  same final tag name for multiple tags just because they share a vendor and
+  event role.
+- When a base naming pattern collides, add the smallest meaningful suffix that
+  explains why the object remains separate: trigger event, page type, form type,
+  market, language, product range, campaign, destination ID suffix, pixel/account
+  role, consent category, sequence role such as `Base`, `Config`, `PageView`,
+  `Setup`, `Lead Event`, `Standard Event`, or lifecycle status such as
+  `Legacy`, `Paused`, or `Decommission candidate`.
+- Use an object ID suffix only as a temporary audit placeholder when the real
+  business distinction is unknown. Mark that row as blocked for owner
+  clarification instead of treating the ID-suffixed name as a preferred final
+  production name.
 - Keep ambiguous business tokens such as `IGGI`, `Aura`, `Smart`, or agency
   acronyms only when the user confirms their meaning or the configuration proves
   the scope.

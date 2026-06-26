@@ -261,7 +261,8 @@ When creating a workbook or CSV set, use these stable tabs:
 - `10 Consolidation Map`: exact duplicates, similar patterns, gateway
   candidates, proposed replacements, and objects that become obsolete.
 - `11 Naming Standardization`: proposed convention, object ID, before name,
-  after name, layer, reason, dependency risk, and blocker when not renamed.
+  after name, layer, reason, dependency risk, uniqueness status, collision
+  resolution suffix when needed, and blocker when not renamed.
 - `12 Cleanup Roadmap`: phased cleanup plan with dependencies and QA.
 - `13 QA Plan`: preview/debug checks, owner, status, evidence, and sign-off.
 - `14 Route Strategy`: execution route, import mode, conflict strategy,
