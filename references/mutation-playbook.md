@@ -46,6 +46,8 @@ Proceed only when all are true:
 - a dependency sweep has been completed for every rename/delete/update;
 - the final naming scheme for new helper variables, triggers, and tags is known;
 - the completion ledger has no blank mandatory workstreams;
+- measurement diagnosis is complete for every meaningful affected object or
+  explicitly blocked with owner/runtime/server/dataLayer evidence needed;
 - a structured operation table exists using `operation-schema.md`;
 - Google analytics/ecommerce objects have been classified as GA4/current Google
   tag by default, with UA only as an explicit documented exception;
@@ -115,6 +117,8 @@ The plan must address:
   folder placement;
 - Google event classification, with ambiguous Google analytics/ecommerce
   objects treated as GA4/current Google tag rather than UA;
+- business model, decision outcome, conversion hierarchy, platform role, and
+  expected data contract for meaningful affected objects;
 - GA4 dataLayer/event payload correctness before GA4 variable or tag fixes;
 - trigger duplicates, near duplicates, trigger groups, exceptions, unused
   triggers, single-member trigger groups, and reusable trigger opportunities;

@@ -48,6 +48,7 @@ Runtime QA status:
 Severity calibration basis:
 Completion gate result: Complete | Incomplete / blocked
 Reconciliation status:
+Measurement diagnosis status:
 Limitations:
 Completion ledger status:
 ```
@@ -64,6 +65,7 @@ Google/UA exception status:
 Critical ecommerce variable issues:
 Official vendor documentation status:
 Vendor playbook coverage:
+Measurement diagnosis status:
 Runtime QA status:
 GA4 dataLayer format status:
 Missing standard events / dataLayer readiness:
@@ -163,9 +165,9 @@ summary.
 
 ## Workstream Reconciliation Table
 
-Use this table to prove that audit scope, semantic validation, and cleanup
-decisions reconcile. A completed audit or cleanup plan must not have unresolved
-rows.
+Use this table to prove that audit scope, measurement diagnosis, semantic
+validation, and cleanup decisions reconcile. A completed audit or cleanup plan
+must not have unresolved rows.
 
 ```text
 Workstream:
@@ -173,6 +175,7 @@ Object family:
 Total source count:
 Inventoried count:
 Dependency-mapped count:
+Measurement-diagnosed count:
 Semantically validated count:
 Cleanup-decision count:
 Deferred count:
@@ -181,6 +184,7 @@ User-excluded count:
 Unresolved count:
 Inventory phase status: Done | Deferred | Not applicable | User-excluded
 Dependency phase status: Done | Deferred | Not applicable | User-excluded
+Measurement diagnosis phase status: Done | Deferred | Not applicable | User-excluded
 Semantic validation phase status: Done | Deferred | Not applicable | User-excluded
 Cleanup decision phase status: Done | Deferred | Not applicable | User-excluded
 Report reconciliation phase status: Done | Deferred | Not applicable | User-excluded
@@ -250,6 +254,7 @@ Missing standard events:
 DataLayer readiness blockers:
 Naming convention and rename blockers:
 Meaningful object families semantically validated:
+Meaningful object families measurement-diagnosed:
 Object families only inventoried:
 Custom code semantic review:
 Reconciliation counts:
@@ -380,9 +385,13 @@ When creating a workbook or CSV set, use these stable tabs:
 - `06 Consent & Routing`: CMP events, consent mode defaults/updates, blocking
   triggers, trigger groups, vendor pageview patterns, client-to-server consent
   forwarding, server-side validation blockers, exceptions.
+- `06b Measurement Diagnosis`: business model, decision outcome, conversion
+  hierarchy, vendor/platform role, expected event/payload contract,
+  intent blockers, linked semantic rows, and linked operations.
 - `07 Semantic Object Matrix`: one row per meaningful object or reviewed family:
-  object ID/name/layer, vendor/family, inferred business role, depth required
-  and completed, trigger-context status, configuration/code logic status,
+  object ID/name/layer, vendor/family, inferred business role, decision outcome,
+  conversion hierarchy, platform role, expected data contract, depth required and
+  completed, trigger-context status, configuration/code logic status,
   source/output status, consent/server status, evidence level, semantic status,
   confidence, linked finding/operation, runtime QA, and blocker/next evidence.
   If depth required includes `D3`, include D3 inputs/sources, D3 logic summary,
@@ -421,13 +430,15 @@ When creating a workbook or CSV set, use these stable tabs:
 - `17 Deferred Blockers`: objects or patterns not changed, blocker type,
   missing evidence, owner, and recommended next action.
 - `18 Completion Ledger`: mandatory workstream, overall status, inventory phase
-  status, dependency phase status, semantic validation phase status, cleanup
-  decision phase status, report reconciliation phase status, affected
+  status, dependency phase status, measurement diagnosis phase status, semantic
+  validation phase status, cleanup decision phase status, report reconciliation
+  phase status, affected
   layer/object scope, evidence, blocker, required next evidence, owner, and
   next action.
 - `18b Workstream Reconciliation`: workstream/object family, total source count,
-  inventoried count, dependency-mapped count, semantically validated count,
-  cleanup-decision count, deferred count, not applicable count, user-excluded
+  inventoried count, dependency-mapped count, measurement-diagnosed count,
+  semantically validated count, cleanup-decision count, deferred count, not
+  applicable count, user-excluded
   count, unresolved count, reconciliation formula status, failed gate, affected
   objects, blocker, risk, required next evidence, owner, and next action.
 - `19 Generated JSON QA`: for importable JSON only; parse status, unique ID

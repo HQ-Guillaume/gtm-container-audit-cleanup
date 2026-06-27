@@ -24,6 +24,9 @@ Every deliverable must account for:
 - dependency map, including firing/blocking triggers, trigger groups,
   setup/teardown tags, folders, custom templates, and custom HTML/JavaScript
   references;
+- measurement diagnosis: business model, decision outcomes, conversion
+  hierarchy, vendor/platform roles, and expected data contracts for meaningful
+  object families;
 - semantic validation status for every meaningful object family;
 - semantic model coverage for meaningful conversion, media, ecommerce, lead,
   custom-code, server-side, and multi-market object families;
@@ -57,6 +60,7 @@ Track each mandatory workstream through these phases:
 | --- | --- |
 | Inventory | Objects or evidence enumerated with IDs/names/counts. |
 | Dependency map | Consumers, references, firing/blocking relationships, setup/teardown, folders, templates, and custom-code references mapped. |
+| Measurement diagnosis | Business model, decision outcome, conversion hierarchy, platform role, expected data contract, and intent blockers recorded for meaningful families. |
 | Semantic validation | Purpose, expected behavior, evidence, risk, confidence, and semantic status assigned. |
 | Cleanup decision | Keep/fix/consolidate/delete/defer/no-change decision recorded with route, aggressiveness options, dependencies, QA, and blocker where applicable. |
 | Report reconciliation | Counts reconcile and the report/workbook contains required rows or explicit blockers. |
@@ -70,6 +74,11 @@ required phase is `Done`, `Not applicable`, or `User-excluded`.
   an ID/path and name or a documented missing identifier.
 - `Dependency map`: every relevant trigger, variable, folder, setup/teardown,
   template, and custom-code reference is mapped or explicitly blocked.
+- `Measurement diagnosis`: every meaningful conversion, media, ecommerce, lead,
+  server-side, custom-code, multi-market, gateway, or consolidation candidate has
+  a business model or family context, decision outcome, conversion hierarchy,
+  vendor/platform role, expected event/payload contract, and intent blocker when
+  ambiguous. Cleanup operations are not ready when this diagnosis is missing.
 - `Semantic validation`: every meaningful object or family has purpose,
   expected behavior, evidence, risk, confidence, semantic status, and affected
   consumers. Custom code also requires role category, consent assumption, side
@@ -125,6 +134,7 @@ For each meaningful object family, report:
 - `total`
 - `inventoried`
 - `dependency_mapped`
+- `measurement_diagnosed`
 - `semantically_validated`
 - `cleanup_decided`
 - `deferred`
@@ -151,6 +161,8 @@ Before final delivery, verify:
 - no mandatory workstream is blank or silently skipped;
 - every layer has changes, findings, or a documented reason for no change;
 - no meaningful object family is inventory-only or dependency-only;
+- no cleanup-ready claim exists for a meaningful family missing measurement
+  diagnosis;
 - semantic model checks have been completed or deferred for conversion, media,
   ecommerce, lead, server-side, and complex consolidation candidates;
 - Custom HTML, Custom JavaScript, and custom templates have object-level purpose,

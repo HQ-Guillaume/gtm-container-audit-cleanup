@@ -8,8 +8,10 @@ stakeholder-facing report section.
 ## Contents
 
 - Purpose
+- Measurement Diagnosis Gate
 - Model Layers
 - Inference Rules
+- Business Defect Taxonomy
 - Missing Logic Detection
 - Semantic Model Checks
 - Reporting Discipline
@@ -27,6 +29,28 @@ business objective -> user action -> event/context -> GTM objects
 This prevents superficial cleanup from hiding business defects. A duplicate tag
 can be harmless, while a technically valid conversion tag can train bidding on
 the wrong action or send a nonsensical value.
+
+## Measurement Diagnosis Gate
+
+Before cleanup decisions, build a short internal diagnosis for the container or
+for each meaningful object family:
+
+- business model: ecommerce, lead generation, media/publisher, SaaS, school,
+  marketplace, appointment, content, support, or utility;
+- decision outcomes: sale, qualified lead, application, appointment, download,
+  content monetization, subscription, retention, audience, exclusion, or
+  attribution;
+- conversion hierarchy: primary conversion, micro-conversion, engagement,
+  remarketing, server-forwarding event, or technical helper;
+- platform role: reporting, bidding optimization, audience building, enhanced
+  matching, CRM/affiliate handoff, server routing, or operational QA;
+- expected contract: event name, trigger context, value/currency, item/object
+  shape, lead/form type, user or event ID, market/product scope, consent, and
+  deduplication.
+
+Do not compile cleanup operations for a meaningful object when this diagnosis is
+missing. If the export cannot prove intent, use a precise owner question,
+runtime QA requirement, or server/dataLayer blocker.
 
 ## Model Layers
 
@@ -61,6 +85,31 @@ Do not silently assume:
 If intent is plausible but unproven, create a blocker or owner question only
 when it affects a cleanup decision, mutation safety, QA, or measurement quality.
 
+## Business Defect Taxonomy
+
+Actively search for defects that are invisible in a superficial object cleanup:
+
+- a final conversion tag fires on a low-intent click, form start, shared
+  thank-you page, or generic pageview;
+- media bidding tags receive micro-conversions or audience events as if they
+  were primary business outcomes;
+- purchase, lead, value, quantity, item, product, or category variables use
+  wrong paths, stale dataLayer history, fixed indexes, scalar fields, or
+  incompatible output types;
+- vendors tracking the same business action receive different values, currency,
+  IDs, event names, item sets, or deduplication fields without a clear reason;
+- consent or server-side routing is judged only from browser-side triggers even
+  though consent or vendor routing may be forwarded to a server container;
+- names imply a market, product range, campaign, form type, or qualified lead
+  but trigger filters, variables, or payloads do not enforce that meaning;
+- reusable variables, triggers, or helpers are shared across incompatible
+  business contexts;
+- a cleanup proposal would remove a technically messy object that actually
+  preserves a distinct business, consent, market, or vendor-platform role.
+
+For each defect, prefer a finding, owner question, website/dataLayer blocker, or
+runtime QA step over a guessed GTM-side fix.
+
 ## Missing Logic Detection
 
 After mapping the implemented objects, infer likely missing pieces from the
@@ -87,6 +136,8 @@ blocker unless the export/runtime evidence proves the defect.
 
 Before producing cleanup operations, verify:
 
+- the measurement diagnosis gate is complete for every affected meaningful
+  object or family;
 - every high-risk tag has one inferred business objective or a documented
   ambiguous objective;
 - every conversion/media/ecommerce tag has a source-of-truth path for the values

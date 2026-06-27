@@ -24,6 +24,9 @@ large-container analysis, but it is not required to read or apply the workflow.
   limited review.
 - Build an internal business and measurement model before judging meaningful
   tags, triggers, variables, formulas, vendor fields, or cleanup candidates.
+- Complete the measurement diagnosis gate before cleanup: business model,
+  decision outcome, conversion hierarchy, platform role, and expected data
+  contract.
 - Complete required D1-D3 review from export, API, UI, source, or code evidence.
   Only D4 runtime proof may be deferred without making the audit incomplete.
 - Treat cleanup as one workflow covering naming, unused objects, duplicates,
@@ -108,8 +111,9 @@ Use Calendar Versioning for public releases:
 - Tag format: `vYYYY.MM.DD` for the first release of a day.
 - Same-day follow-up format: `vYYYY.MM.DD.N`, where `N` starts at `1`.
 - Release title format: `GTM Container Web Analyst vYYYY.MM.DD[.N]`.
-- Release notes should summarize user-visible changes, safety/validation changes,
-  and the validation commands that passed.
+- Release notes should be written for real users, not as an internal commit log.
+  Use clear sections: `Why This Release Matters`, `What Changed`,
+  `What Users Should Do`, `Validation`, and `Known Limits`.
 
 Historical timestamped tags are kept for traceability. New releases should use
 the CalVer pattern above.
@@ -118,6 +122,34 @@ Optional release check:
 
 ```powershell
 python scripts/check_release.py --tag v2026.06.28
+python scripts/check_release.py --tag v2026.06.28 --release-notes release-notes.md
+```
+
+Recommended release-note shape:
+
+```markdown
+## Why This Release Matters
+
+One short paragraph explaining the practical user benefit.
+
+## What Changed
+
+- User-readable change.
+- User-readable change.
+
+## What Users Should Do
+
+- Update/install the new version.
+- Re-run or regenerate affected outputs when relevant.
+
+## Validation
+
+- Check that passed.
+- Check that could not run, with the exact reason.
+
+## Known Limits
+
+- Remaining limitation or `None known`.
 ```
 
 ## Privacy And Repository Hygiene

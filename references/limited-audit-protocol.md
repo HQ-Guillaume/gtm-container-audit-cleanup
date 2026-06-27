@@ -24,6 +24,7 @@ Even in a limited audit, never skip these for the objects in scope:
 - evidence freshness and source identification;
 - inventory and IDs/names for scoped objects;
 - dependency map for scoped objects and their consumers;
+- measurement diagnosis for scoped meaningful objects;
 - consent/privacy impact when scoped objects can fire tags or send data;
 - official documentation basis for scoped vendor/event payload judgments;
 - semantic validation for scoped objects;
@@ -71,4 +72,5 @@ objects. It must say:
 
 For destructive changes, broad renaming, consent changes, ecommerce payload
 changes, or cross-layer consolidation, require a full dependency sweep and full
-semantic validation of affected families before execution.
+measurement diagnosis plus semantic validation of affected families before
+execution.

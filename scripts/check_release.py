@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run dependency-free release checks for the GTM audit cleanup skill."""
+"""Run dependency-free release checks for the GTM Container Web Analyst skill."""
 
 from __future__ import annotations
 
@@ -15,6 +15,13 @@ MAX_SKILL_LINES = 500
 LONG_REFERENCE_LINES = 100
 BLOCKLIST_FILE = "scripts/release_blocklist.txt"
 CALVER_TAG_PATTERN = re.compile(r"^v\d{4}\.\d{2}\.\d{2}(?:\.\d+)?$")
+RELEASE_NOTE_HEADINGS = (
+    "why this release matters",
+    "what changed",
+    "what users should do",
+    "validation",
+    "known limits",
+)
 
 
 def repo_root() -> Path:
@@ -171,6 +178,30 @@ def check_release_tag(tag: str | None) -> list[str]:
     ]
 
 
+def check_release_notes(path: Path | None) -> list[str]:
+    if path is None:
+        return []
+    if not path.exists():
+        return [f"Release notes file does not exist: {path}"]
+
+    text = path.read_text(encoding="utf-8")
+    normalized = text.lower()
+    errors = []
+    for heading in RELEASE_NOTE_HEADINGS:
+        pattern = re.compile(rf"^#+\s+{re.escape(heading)}\s*$", re.I | re.M)
+        if not pattern.search(text):
+            errors.append(f"Release notes missing heading: {heading.title()}")
+
+    bullets = len(re.findall(r"(?m)^\s*[-*]\s+\S+", text))
+    if bullets < 3:
+        errors.append("Release notes should include at least three readable bullets")
+    if "validation" in normalized and "python" in normalized and "not run" in normalized:
+        return errors
+    if "validation" in normalized and not re.search(r"\b(pass|passed|not run|blocked)\b", normalized):
+        errors.append("Validation section should state passed or blocked checks")
+    return errors
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -181,6 +212,11 @@ def main() -> int:
     parser.add_argument(
         "--tag",
         help="Validate a proposed release tag against the public CalVer policy.",
+    )
+    parser.add_argument(
+        "--release-notes",
+        type=Path,
+        help="Validate human-readable release notes before publishing.",
     )
     args = parser.parse_args()
 
@@ -208,6 +244,7 @@ def main() -> int:
     errors.extend(check_patterns(root, "blocklist", release_blocklist(root)))
     errors.extend(check_py_compile(root))
     errors.extend(check_release_tag(args.tag))
+    errors.extend(check_release_notes(args.release_notes))
 
     if errors:
         for error in errors:

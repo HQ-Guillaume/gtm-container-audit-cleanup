@@ -85,6 +85,11 @@ def covered(rows: Iterable[dict[str, Any]], layer: str, source_id: str, source_n
 
 def semantic_decision_complete(row: dict[str, Any]) -> bool:
     required = (
+        "inferred_business_role",
+        "decision_outcome",
+        "conversion_hierarchy",
+        "platform_role",
+        "expected_data_contract",
         "semantic_status",
         "depth_completed",
         "trigger_context_status",
@@ -128,6 +133,7 @@ SCHEMA_REQUIRED_DUPLICATE_COLUMN_PAIRS = {
                 "overall_status",
                 "inventory_phase_status",
                 "dependency_phase_status",
+                "measurement_diagnosis_phase_status",
                 "semantic_validation_phase_status",
                 "cleanup_decision_phase_status",
                 "report_reconciliation_phase_status",
@@ -140,6 +146,7 @@ SCHEMA_REQUIRED_DUPLICATE_COLUMN_PAIRS = {
                 "total_source_count",
                 "inventoried_count",
                 "dependency_mapped_count",
+                "measurement_diagnosed_count",
                 "cleanup_decision_count",
             }
         ),
@@ -148,6 +155,7 @@ SCHEMA_REQUIRED_DUPLICATE_COLUMN_PAIRS = {
             {
                 "inventory_phase_status",
                 "dependency_phase_status",
+                "measurement_diagnosis_phase_status",
                 "semantic_validation_phase_status",
                 "cleanup_decision_phase_status",
                 "report_reconciliation_phase_status",

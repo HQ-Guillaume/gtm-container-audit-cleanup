@@ -24,6 +24,7 @@ Other references may cite these policy IDs instead of restating the full rule.
 | POL-008 | Names must match behavior. Country, product, campaign, consent, purchase, lead, or form-submit names require matching configuration or a blocker/rename. |
 | POL-009 | Export-level semantic review cannot be deferred to cleanup execution. Runtime proof may be deferred before mutation, but audited tags, variables, triggers, custom code, and templates must have semantic evidence or an `Incomplete / blocked` status. |
 | POL-010 | Required D1-D3 depth must be completed from available export/API/source evidence. Only D4 runtime proof may be deferred; missing D1-D3 work keeps the audit unresolved/incomplete. |
+| POL-011 | Cleanup is downstream of measurement diagnosis. Diagnose business model, decision outcome, conversion hierarchy, platform role, and expected data contract before judging meaningful objects or compiling cleanup operations. |
 
 ## Cleanup And Mutation Policies
 
@@ -40,6 +41,7 @@ Other references may cite these policy IDs instead of restating the full rule.
 | POL-109 | Do not invent GTM-side custom JavaScript to bypass missing official website/dataLayer fields. Mark the website/dataLayer contract as blocked instead. |
 | POL-110 | Do not rewrite custom HTML by replacing GTM variable references with hardcoded values unless the user explicitly approved that semantic change. |
 | POL-111 | Do not create cleanup operations whose primary action is `review custom code`, `perform line-level review`, `check variables`, or `validate trigger logic`; those are audit tasks, not cleanup actions. |
+| POL-112 | Do not propose renames, deletions, consolidation, helper variables, custom-code rewrites, JSON patches, or direct GTM mutations for meaningful objects whose business/measurement role is unclear. Use an owner question, runtime QA requirement, or website/dataLayer/server blocker instead. |
 
 ## JSON Import Policies
 

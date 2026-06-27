@@ -54,6 +54,7 @@ A cleanup plan must be compiled from a complete semantic audit, not from an
 inventory subset. Before producing the final operation set, reconcile each
 material object family against the audit ledger:
 
+- Measurement diagnosis;
 - Tags;
 - Triggers;
 - Variables;
@@ -71,6 +72,9 @@ needed after semantic validation, deferred with blocker, not applicable, or
 user-excluded. Do not omit a family because no obvious mutation was found. Do
 not allow an inventory-only or dependency-only family to disappear from the
 cleanup plan; either finish semantic validation or mark the family deferred.
+Do not allow a family with missing measurement diagnosis to become
+cleanup-ready; keep it unresolved or deferred with the exact owner, runtime,
+server, or dataLayer blocker.
 
 For families with no mutation, create a report-only `Document exception` or
 `Defer` row so the user can see that the family was reviewed. For unresolved
@@ -128,7 +132,7 @@ Represent every proposed or executed cleanup as a structured operation:
 | `after_name` | Required for rename, replace, or new object. |
 | `semantic_role` | Vendor/event/business purpose. |
 | `semantic_status` | Keep, Fix, Consolidate, Delete candidate, More info needed, or Not applicable. Required for cleanup-relevant objects. |
-| `coverage_phase_status` | Inventory, dependency map, semantic validation, cleanup decision, and report reconciliation status for the affected family. |
+| `coverage_phase_status` | Inventory, dependency map, measurement diagnosis, semantic validation, cleanup decision, and report reconciliation status for the affected family. |
 | `reconciliation_status` | Complete, incomplete, blocked, or not applicable. Required for report-only/deferred rows. |
 | `reason` | Finding, official-doc contract, dependency issue, or user decision. |
 | `official_doc_basis` | Source title/URL or `Not applicable`. |
@@ -156,26 +160,29 @@ when the user requests a deeper technical workbook.
 Compile audit findings into operations in this order:
 
 1. Normalize inventory and dependency facts.
-2. Attach official documentation contracts to GA4 and vendor-event findings.
-3. Reconcile material object families against the audit ledger and identify any
+2. Diagnose business model, decision outcome, conversion hierarchy,
+   vendor/platform role, and expected data contract for affected meaningful
+   families.
+3. Attach official documentation contracts to GA4 and vendor-event findings.
+4. Reconcile material object families against the audit ledger and identify any
    family that is still inventory-only or dependency-only.
-4. Populate the semantic object matrix for meaningful/high-impact objects or
+5. Populate the semantic object matrix for meaningful/high-impact objects or
    repeated families. Finish semantic validation, or mark unresolved rows
    deferred with blockers.
-5. Build the semantic model for meaningful object families and link findings or
+6. Build the semantic model for meaningful object families and link findings or
    operations back to matrix rows or documented exceptions.
-6. Run semantic logic checks for value, quantity, item, lead, media, shared
+7. Run semantic logic checks for value, quantity, item, lead, media, shared
    variable, and custom-code logic.
-7. Select applicable optimization patterns without flattening business meaning.
-8. Classify findings by business impact and risk.
-9. Choose recommended cleanup aggressiveness.
-10. Add selectable aggressiveness options and tradeoffs for each material
+8. Select applicable optimization patterns without flattening business meaning.
+9. Classify findings by business impact and risk.
+10. Choose recommended cleanup aggressiveness.
+11. Add selectable aggressiveness options and tradeoffs for each material
    operation.
-11. Choose execution route.
-12. Generate operations with route-specific mutation style.
-13. Validate dependencies and blockers.
-14. Batch operations for execution.
-15. Run post-batch readback and update statuses.
+12. Choose execution route.
+13. Generate operations with route-specific mutation style.
+14. Validate dependencies and blockers.
+15. Batch operations for execution.
+16. Run post-batch readback and update statuses.
 
 For direct GTM/MCP/API, prefer `Update` or `Rename` on existing IDs. Use
 `Replace` only when a new reusable concept is needed or the API/tool behavior
@@ -291,6 +298,9 @@ Use when the user asks for a fast production repair.
 - Missing business logic can be a finding even when all current GTM objects are
   technically valid; record website/dataLayer/server blockers instead of
   inventing GTM-side guesses.
+- Missing measurement diagnosis blocks cleanup for meaningful affected objects.
+  Do not rename, delete, consolidate, rewrite, or patch them until their
+  business/platform role is known or explicitly deferred.
 - A name that says a country, product, consent vendor, or event must be enforced
   by configuration or renamed/deferred.
 - A custom HTML tag that only defines a function is a probable no-op unless

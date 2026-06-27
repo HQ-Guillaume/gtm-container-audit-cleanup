@@ -62,6 +62,7 @@ Common hidden proof tabs:
 - `03 Inventory - Tags`
 - `04 Inventory - Triggers`
 - `05 Inventory - Variables`
+- `06b Measurement Diagnosis`
 - `07 Semantic Object Matrix`
 - `07b Custom Code Semantic Review`
 - `08 Official Docs Map`

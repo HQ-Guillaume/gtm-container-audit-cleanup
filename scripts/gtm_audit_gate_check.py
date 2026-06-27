@@ -41,6 +41,7 @@ COUNT_FIELDS = [
     "total_source_count",
     "inventoried_count",
     "dependency_mapped_count",
+    "measurement_diagnosed_count",
     "semantically_validated_count",
     "cleanup_decision_count",
     "deferred_count",
@@ -57,6 +58,10 @@ SEMANTIC_MATRIX_REQUIRED_FIELDS = [
     "layer",
     "vendor_or_family",
     "inferred_business_role",
+    "decision_outcome",
+    "conversion_hierarchy",
+    "platform_role",
+    "expected_data_contract",
     "depth_required",
     "depth_completed",
     "trigger_context_status",
@@ -344,6 +349,10 @@ def validate_rows(rows: Iterable[Dict[str, Any]]) -> Tuple[List[str], List[str]]
             warnings.append(f"{label}: inventoried_count is below total_source_count")
         if counts["dependency_mapped_count"] < counts["semantically_validated_count"]:
             warnings.append(f"{label}: dependency_mapped_count is below semantically_validated_count")
+        if counts["measurement_diagnosed_count"] < counts["semantically_validated_count"]:
+            errors.append(
+                f"{label}: measurement_diagnosed_count is below semantically_validated_count"
+            )
         if counts["cleanup_decision_count"] < counts["semantically_validated_count"]:
             warnings.append(f"{label}: cleanup_decision_count is below semantically_validated_count")
 
@@ -372,6 +381,17 @@ def validate_required_table(
         for field in ("object_id", "object_name", "layer", "semantic_status")
         if field in required_fields
     ]
+    key_fields.extend(
+        field
+        for field in (
+            "inferred_business_role",
+            "decision_outcome",
+            "conversion_hierarchy",
+            "platform_role",
+            "expected_data_contract",
+        )
+        if field in required_fields
+    )
     for index, row in enumerate(rows, start=2):
         for field in key_fields:
             if field_is_blank(row.get(field)):

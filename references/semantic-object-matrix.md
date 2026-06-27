@@ -32,9 +32,9 @@ template object.
 The semantic chain is:
 
 ```text
-business intent -> trigger context -> configuration/code logic
--> inferred output or side effect -> destination/platform expectation
--> correctness decision
+business intent -> decision outcome -> platform role -> trigger context
+-> configuration/code logic -> inferred output or side effect
+-> destination/platform expectation -> correctness decision
 ```
 
 ## Depth Tiers
@@ -82,6 +82,10 @@ Minimum columns:
 - `layer`
 - `vendor_or_family`
 - `inferred_business_role`
+- `decision_outcome`
+- `conversion_hierarchy`
+- `platform_role`
+- `expected_data_contract`
 - `depth_required`
 - `depth_completed`
 - `trigger_context_status`
@@ -125,10 +129,14 @@ name, ID, type, hash, duplicate group, or connected trigger. A complete row must
 contain a judgment about the semantic chain:
 
 ```text
-business intent -> trigger context -> configuration/code logic
--> inferred output or side effect -> destination/platform expectation
--> correctness decision
+business intent -> decision outcome -> platform role -> trigger context
+-> configuration/code logic -> inferred output or side effect
+-> destination/platform expectation -> correctness decision
 ```
+
+The row is not cleanup-ready until `decision_outcome`, `conversion_hierarchy`,
+`platform_role`, and `expected_data_contract` are filled or the row has an
+explicit owner/runtime/server/dataLayer blocker.
 
 For custom code, export-level inspection is mandatory before the row can be
 called semantically reviewed. Record what the code reads, writes, calls, pushes,

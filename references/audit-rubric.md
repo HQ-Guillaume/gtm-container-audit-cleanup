@@ -10,6 +10,7 @@ page source, crawl output, or stakeholder-provided evidence.
 - Evidence Sources
 - Inventory Checklist
 - Audit Completeness Contract
+- Measurement Truth Before Cleanup
 - Official Documentation Contract
 - Deep Object Semantics
 - Semantic Model Protocol
@@ -88,6 +89,8 @@ For every audit, cover:
 
 - all tags, triggers, variables, folders, templates, consent settings, and
   built-in variables;
+- measurement diagnosis for meaningful conversion, media, ecommerce, lead,
+  custom-code, server-side, multi-market, gateway, and consolidation families;
 - exact duplicates and near duplicates across tags, triggers, variables, custom
   code, templates, folders, and naming patterns;
 - currently unused objects and objects that become obsolete after consolidation;
@@ -146,6 +149,26 @@ supplied evidence before delivery. Do not use `Deferred`, `More info needed`, or
 runtime uncertainty to skip source-path, formula, trigger, tag-parameter,
 custom-code, or custom-template inspection that is available in the export.
 Only D4 runtime proof can remain deferred without making the audit incomplete.
+
+## Measurement Truth Before Cleanup
+
+Treat the container as a measurement system before treating it as an object
+cleanup problem. For every meaningful family, infer:
+
+- business model and decision outcome;
+- conversion hierarchy, such as primary conversion, micro-conversion,
+  engagement, audience, utility, or server-forwarding event;
+- vendor/platform role, such as reporting, bidding, attribution, audience,
+  enhanced matching, CRM/affiliate handoff, publisher ads, or server routing;
+- expected data contract: event name, trigger context, value, currency, IDs,
+  item/object shape, lead/form type, consent, market/product scope, and
+  deduplication.
+
+Do not propose cleanup for a meaningful object only because it looks unused,
+duplicated, inconsistently named, or technically awkward. First decide whether
+it preserves a distinct business, market, consent, vendor, server-side, or
+platform-optimization role. If intent is unclear, ask an owner question or mark
+runtime/server/dataLayer proof required.
 
 ## Official Documentation Contract
 

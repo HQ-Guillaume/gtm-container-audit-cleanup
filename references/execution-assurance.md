@@ -18,8 +18,9 @@ Do not trust the final narrative by itself. The agent must leave evidence that
 the audit actually covered the container:
 
 ```text
-source export/API evidence -> inventory/dependency facts -> semantic rows
--> findings/operations -> reconciliation/gate result
+source export/API evidence -> inventory/dependency facts
+-> measurement diagnosis -> semantic rows -> findings/operations
+-> reconciliation/gate result
 ```
 
 The user-facing cleanup plan should remain concise, but the backing workbook or
@@ -40,6 +41,9 @@ A completed full audit or cleanup plan must include or generate:
   built-ins;
 - dependency evidence for triggers, variables, setup/teardown, folders,
   templates, and custom-code references;
+- Measurement Diagnosis rows or fields for meaningful object families, covering
+  business model, decision outcome, conversion hierarchy, platform role, and
+  expected data contract;
 - Semantic Object Matrix rows for all high-impact active tags/variables and all
   reviewed meaningful families;
 - Custom Code Semantic Review rows for active, referenced, risky, unused, or
@@ -76,6 +80,8 @@ to approve or verify.
 These behaviors are failed execution, not harmless limitations:
 
 - high-impact objects appear in the export but not in the Semantic Object Matrix;
+- meaningful object families move to cleanup operations without measurement
+  diagnosis;
 - Custom HTML/JS exists but the Custom Code Semantic Review tab is missing or
   says the export review still needs to be done;
 - a finding or operation says to review code, variables, triggers, or payloads
