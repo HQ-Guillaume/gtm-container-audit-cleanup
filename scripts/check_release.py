@@ -13,34 +13,7 @@ from pathlib import Path
 
 MAX_SKILL_LINES = 500
 LONG_REFERENCE_LINES = 100
-PRIVACY_PATTERNS = [
-    r"M8K4V9",
-    r"ynov",
-    r"PR4MQ6J",
-    r"laurastar",
-    r"KHN8CCM",
-    r"daxon",
-    r"workspace1000137",
-    r"workspace283",
-    r"workspace167",
-    r"GTM-M8",
-    r"GTM-PR",
-    r"GTM-KH",
-    r"haiqi",
-    r"optimize-matter",
-    r"Guillaume",
-    r"C:\\Users",
-    r"Downloads",
-    r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}",
-]
-RESIDUAL_PATTERNS = [
-    r"TODO",
-    r"FIXME",
-    r"HACK",
-    r"test ended",
-    r"analyst-hardening-compare",
-    r"AppData\\Local\\Temp",
-]
+BLOCKLIST_FILE = "scripts/release_blocklist.txt"
 
 
 def repo_root() -> Path:
@@ -101,6 +74,49 @@ def referenced_resources(root: Path) -> tuple[set[str], list[str]]:
     return refs, missing
 
 
+def imported_scripts(root: Path) -> set[str]:
+    imports: set[str] = set()
+    pattern = re.compile(r"^\s*(?:from|import)\s+([A-Za-z_][A-Za-z0-9_]*)")
+    for path in sorted((root / "scripts").glob("*.py")):
+        for line in path.read_text(encoding="utf-8").splitlines():
+            match = pattern.match(line)
+            if not match:
+                continue
+            candidate = root / "scripts" / f"{match.group(1)}.py"
+            if candidate.exists():
+                imports.add(candidate.relative_to(root).as_posix())
+    return imports
+
+
+def release_blocklist(root: Path) -> list[str]:
+    path = root / BLOCKLIST_FILE
+    if not path.exists():
+        return []
+    patterns = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        value = line.strip()
+        if value and not value.startswith("#"):
+            patterns.append(value)
+    return patterns
+
+
+def check_orphan_resources(root: Path, referenced: set[str]) -> list[str]:
+    errors = []
+    imported = imported_scripts(root)
+    exempt = {
+        "scripts/check_release.py",
+        "scripts/gtm_self_test.py",
+    }
+    routed = referenced | imported | exempt
+
+    for folder, suffix in (("references", "*.md"), ("scripts", "*.py")):
+        for path in sorted((root / folder).glob(suffix)):
+            rel = path.relative_to(root).as_posix()
+            if rel not in routed:
+                errors.append(f"{rel} is not referenced, imported, or explicitly exempted")
+    return errors
+
+
 def git_ls_files(root: Path) -> set[str]:
     try:
         output = subprocess.check_output(["git", "ls-files"], cwd=root, text=True)
@@ -124,8 +140,7 @@ def check_patterns(root: Path, name: str, patterns: list[str]) -> list[str]:
     errors = []
     compiled = [(pattern, re.compile(pattern, re.I)) for pattern in patterns]
     for path in text_files(root):
-        # Personal paths are expected in this release checker's own test pattern list.
-        if path.name == "check_release.py":
+        if path.relative_to(root).as_posix() == BLOCKLIST_FILE:
             continue
         for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
             for label, pattern in compiled:
@@ -165,6 +180,7 @@ def main() -> int:
 
     refs, missing_refs = referenced_resources(root)
     errors.extend(missing_refs)
+    errors.extend(check_orphan_resources(root, refs))
 
     tracked = git_ls_files(root)
     if tracked and not args.allow_untracked:
@@ -173,8 +189,7 @@ def main() -> int:
             errors.append("Referenced resources are untracked: " + ", ".join(untracked_refs))
 
     errors.extend(check_reference_navigation(root))
-    errors.extend(check_patterns(root, "privacy", PRIVACY_PATTERNS))
-    errors.extend(check_patterns(root, "residual", RESIDUAL_PATTERNS))
+    errors.extend(check_patterns(root, "blocklist", release_blocklist(root)))
     errors.extend(check_py_compile(root))
 
     if errors:

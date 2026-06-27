@@ -22,13 +22,15 @@ Other references may cite these policy IDs instead of restating the full rule.
 | POL-006 | Treat ambiguous Google analytics/event/ecommerce objects as GA4/current Google tag candidates unless evidence proves a UA exception. UA Enhanced Ecommerce paths are migration evidence, not GA4 correctness. |
 | POL-007 | Do not accept a variable, helper, custom code block, or media payload as correct merely because it resolves. Its name, event context, source path, formula, output type, and consumers must make logical sense. |
 | POL-008 | Names must match behavior. Country, product, campaign, consent, purchase, lead, or form-submit names require matching configuration or a blocker/rename. |
+| POL-009 | Export-level semantic review cannot be deferred to cleanup execution. Runtime proof may be deferred before mutation, but audited tags, variables, triggers, custom code, and templates must have semantic evidence or an `Incomplete / blocked` status. |
+| POL-010 | Required D1-D3 depth must be completed from available export/API/source evidence. Only D4 runtime proof may be deferred; missing D1-D3 work keeps the audit unresolved/incomplete. |
 
 ## Cleanup And Mutation Policies
 
 | ID | Policy |
 | --- | --- |
 | POL-101 | Cleanup includes every evidence-safe improvement across tags, triggers, variables, folders, templates, consent routing, ecommerce payloads, custom code, naming, unused objects, exact duplicates, and consolidatable patterns. |
-| POL-102 | Naming standardization is mandatory in cleanup unless the user excludes it or business tokens are unclear. Proposed names must be unique within each GTM object layer. |
+| POL-102 | Naming standardization is mandatory in cleanup unless the user excludes it or business tokens are unclear. Follow the user's model first; otherwise infer the dominant local convention and preserve meaningful acronyms/case while standardizing semantic families within each object layer. Proposed names must be unique within each GTM object layer. |
 | POL-103 | Stage deletion decisions: separate currently unused objects from objects that become obsolete only after approved consolidation. |
 | POL-104 | Do not delete tags, triggers, variables, folders, or templates based on age alone. Complete dependency sweeps must cover triggers, trigger groups, setup/teardown, templates, variables, and custom code references. |
 | POL-105 | Flatten single-member trigger groups when the route supports deletion. When it does not, document the route-limited deletion path. |
@@ -37,6 +39,7 @@ Other references may cite these policy IDs instead of restating the full rule.
 | POL-108 | Do not change consent behavior, dataLayer semantics, or vendor payload shape without identifying privacy/business impact and QA. |
 | POL-109 | Do not invent GTM-side custom JavaScript to bypass missing official website/dataLayer fields. Mark the website/dataLayer contract as blocked instead. |
 | POL-110 | Do not rewrite custom HTML by replacing GTM variable references with hardcoded values unless the user explicitly approved that semantic change. |
+| POL-111 | Do not create cleanup operations whose primary action is `review custom code`, `perform line-level review`, `check variables`, or `validate trigger logic`; those are audit tasks, not cleanup actions. |
 
 ## JSON Import Policies
 
@@ -59,3 +62,8 @@ Other references may cite these policy IDs instead of restating the full rule.
 | POL-301 | The cleanup plan is the decision source; the change log is the execution record. Keep IDs, before/after values, reason, impact, QA, owner, and status aligned. |
 | POL-302 | Do not add scratch semantic reasoning to normal cleanup plans or change logs. Surface only findings, blockers, operations, QA, owner questions, and decisions. |
 | POL-303 | End every completed audit, cleanup-plan phase, cleanup phase, JSON generation phase, QA phase, or handoff with a concrete recommended next step. |
+| POL-304 | Keep proof artifacts separate from end-user deliverables. Cleanup plans and post-cleanup change logs must be necessary, actionable, and coherent with backing evidence, not overloaded with internal matrices, raw code/config, validator traces, or scratch reasoning. |
+| POL-305 | D2/D3 proof summaries must explain category, source/input, logic/action, output or side effect, and judgment. Generic evidence signals such as `custom code inspected`, `external URL found`, `dataLayer push detected`, `no obvious browser side effect`, `see config`, or `see export` do not count as semantic proof. |
+| POL-306 | Cleanup plans must expose only what the user needs to decide, approve, debug, or QA; keep raw proof, code/config dumps, dependency graphs, hashes, and validator mechanics in proof tabs or technical appendices. |
+| POL-307 | XLSX cleanup plans should open on a compact decision view by default: one executive decision summary tab and one cleanup action plan tab. Keep proof/technical tabs available but normally hidden with Excel `hidden`, not `veryHidden`. Do not delete proof tabs just to simplify the workbook. |
+| POL-308 | Visible workbook columns must earn their place for real human use: approval, debugging, assignment, QA, impact, or next action. Hide blank, constant, duplicate, validator-only, or raw-proof columns from the user-facing view. |

@@ -237,12 +237,12 @@ For cleanup, standardization, or importable JSON generation, apply
 naming standardization unless the user explicitly excludes it or the required
 business meaning is unclear.
 
-Default convention when no house style exists:
-
-- Tags: `Vendor - Event/role - Scope/detail`.
-- Triggers: `Utility/type - Event or condition - Scope/detail`.
-- Variables: `Type acronym - Variable name/source`.
-- Folders: `Vendor` or `Domain / Function`.
+Read `naming-standardization.md` before rename operations. Follow the user's
+naming model first; otherwise infer the dominant local convention, preserve
+meaningful acronyms/case, and standardize semantic families within each layer.
+Avoid redundant trigger prefixes such as `TR -`; use semantic/subtype prefixes
+such as `Block`, `Consent`, `Event`, `Click`, `Form`, `PV`, `Timer`, or `TG`
+when they clarify behavior.
 
 Before any rename:
 

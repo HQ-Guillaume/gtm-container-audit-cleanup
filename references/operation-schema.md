@@ -79,6 +79,19 @@ evidence, risk, and recommended next action. A cleanup plan with unresolved
 families may still be useful, but it must be labeled `Incomplete / blocked` and
 must not claim full cleanup readiness.
 
+Do not convert missing audit work into a cleanup operation. Actions such as
+`review custom code`, `perform line-level review`, `check variable config`, or
+`validate trigger logic` are not cleanup operations when they are needed to
+decide correctness. Complete that analysis during audit, or mark semantic
+validation `Deferred`/`Incomplete / blocked` with the affected objects and
+required evidence. Runtime QA, owner validation, safe rewrite after QA,
+template migration after QA, or no-change documentation are valid operations.
+
+Use `Deferred` for D4/runtime, owner, legal, server, or mutation blockers after
+D1-D3 have been completed from available evidence. If D1-D3 are not completed,
+the operation set is not cleanup-ready; mark the affected workstream
+`Incomplete / blocked` and keep unresolved counts nonzero.
+
 ## Route Decision Matrix
 
 | User need | Preferred route | Why |
@@ -146,20 +159,23 @@ Compile audit findings into operations in this order:
 2. Attach official documentation contracts to GA4 and vendor-event findings.
 3. Reconcile material object families against the audit ledger and identify any
    family that is still inventory-only or dependency-only.
-4. Build the semantic model for meaningful object families and finish semantic
-   validation, or mark unresolved families deferred with blockers.
-5. Run semantic logic checks for value, quantity, item, lead, media, shared
+4. Populate the semantic object matrix for meaningful/high-impact objects or
+   repeated families. Finish semantic validation, or mark unresolved rows
+   deferred with blockers.
+5. Build the semantic model for meaningful object families and link findings or
+   operations back to matrix rows or documented exceptions.
+6. Run semantic logic checks for value, quantity, item, lead, media, shared
    variable, and custom-code logic.
-6. Select applicable optimization patterns without flattening business meaning.
-7. Classify findings by business impact and risk.
-8. Choose recommended cleanup aggressiveness.
-9. Add selectable aggressiveness options and tradeoffs for each material
+7. Select applicable optimization patterns without flattening business meaning.
+8. Classify findings by business impact and risk.
+9. Choose recommended cleanup aggressiveness.
+10. Add selectable aggressiveness options and tradeoffs for each material
    operation.
-10. Choose execution route.
-11. Generate operations with route-specific mutation style.
-12. Validate dependencies and blockers.
-13. Batch operations for execution.
-14. Run post-batch readback and update statuses.
+11. Choose execution route.
+12. Generate operations with route-specific mutation style.
+13. Validate dependencies and blockers.
+14. Batch operations for execution.
+15. Run post-batch readback and update statuses.
 
 For direct GTM/MCP/API, prefer `Update` or `Rename` on existing IDs. Use
 `Replace` only when a new reusable concept is needed or the API/tool behavior
@@ -280,8 +296,17 @@ Use when the user asks for a fast production repair.
 - A custom HTML tag that only defines a function is a probable no-op unless
   runtime evidence proves an external caller.
 - Custom HTML and Custom JavaScript triage is not enough for planning. Every
-  cleanup-relevant custom-code object needs semantic status, or the plan must
-  defer it with the missing evidence.
+  cleanup-relevant custom-code object needs export-level code/config inspection
+  and semantic status, or the plan must be labeled incomplete for that object.
+  Runtime proof may be deferred before mutation; code inspection may not.
+- A D3-required object is not semantically validated unless source/code logic,
+  inferred output or side effect, consumer expectation, and correctness decision
+  have been recorded.
+- Operation rows and cleanup plans must be user-facing decision/action records.
+  Include what is wrong or changing, affected objects, impact, recommended
+  action, QA/debug method, owner/blocker, status, and next action. Keep raw D3
+  proof, code/config dumps, hash signatures, dependency graphs, and validator
+  details in backing evidence tabs. Use `summary-quality.md` for wording.
 - A Google tag or Google event tag with server endpoint, S2S naming, routing
   parameters, or consent-forwarding parameters is a client-to-server candidate;
   classify uncertain destination IDs or missing browser-side blocking triggers

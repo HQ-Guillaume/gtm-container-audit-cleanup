@@ -13,6 +13,7 @@ consistent across containers, clients, and agents.
 - Cleanup Plan
 - Final Handoff
 - Spreadsheet-Friendly Tabs
+- Workbook And Summary Routing
 - Change Log Columns
 - Cleanup Plan And Change Log Coherence
 - Output Format Selection
@@ -137,6 +138,7 @@ Object name:
 Type:
 Role category: Vendor loader | Event dispatcher | Listener | DOM helper | Storage/cookie helper | Consent/CMP UI | Identity helper | Payload transformer | Template | Obsolete/paused | Other
 Purpose:
+Export review completed: Yes | No | Not applicable
 Trigger / consumer context:
 Consent assumption:
 External URLs / storage / cookie / DOM / dataLayer side effects:
@@ -151,6 +153,13 @@ Aggressiveness options:
 QA method:
 Blocker:
 ```
+
+Use `summary-quality.md` for Custom Code Semantic Review wording. The
+`Expected output / side effect` and runtime-risk fields must explain what the
+object reads, returns, loads, pushes, mutates, or calls, plus the judgment. Do
+not use generic phrases such as `custom code inspected`, `external URL found`,
+`dataLayer push detected`, or `no obvious browser side effect` as the main
+summary.
 
 ## Workstream Reconciliation Table
 
@@ -371,14 +380,19 @@ When creating a workbook or CSV set, use these stable tabs:
 - `06 Consent & Routing`: CMP events, consent mode defaults/updates, blocking
   triggers, trigger groups, vendor pageview patterns, client-to-server consent
   forwarding, server-side validation blockers, exceptions.
-- `07 Semantic Review`: intended role, name-inferred scope, scope confidence,
-  clarification needed, consumed variables, expected output shape, actual output
-  risk, affected consumers, logical consequence, and context for important
-  tags/triggers/variables.
+- `07 Semantic Object Matrix`: one row per meaningful object or reviewed family:
+  object ID/name/layer, vendor/family, inferred business role, depth required
+  and completed, trigger-context status, configuration/code logic status,
+  source/output status, consent/server status, evidence level, semantic status,
+  confidence, linked finding/operation, runtime QA, and blocker/next evidence.
+  If depth required includes `D3`, include D3 inputs/sources, D3 logic summary,
+  D3 output or side effect, D3 consumer expectation, and D3 correctness
+  decision. Missing D3 proof means incomplete audit, not deferred cleanup.
+  Keep raw parameter dumps out of this tab unless they are needed as proof.
 - `07b Custom Code Semantic Review`: object-level Custom HTML, Custom
-  JavaScript, and custom-template purpose, role category, side effects, consent
-  assumption, consumers, risk, semantic status, cleanup recommendation,
-  aggressiveness options, QA method, and blocker.
+  JavaScript, and custom-template purpose, role category, export review status,
+  side effects, consent assumption, consumers, risk, semantic status, cleanup
+  recommendation, aggressiveness options, QA method, and blocker.
 - `08 Official Docs Map`: vendor/platform, implemented event, official source,
   required/recommended parameters, expected data types, observed gap, and whether
   resolution is GTM-only or requires website/dataLayer work.
@@ -426,55 +440,27 @@ Use `Keep`, `Currently unused`, `Consolidation obsolete`,
 usage-status values. Avoid plain `Delete` unless deletion was explicitly
 approved and verified.
 
+## Workbook And Summary Routing
+
+For XLSX cleanup plans, use `workbook-architecture.md`. It defines the default
+two-tab visible decision layer, hidden proof tabs, duplicate-column discipline,
+and workbook validation commands.
+
+For semantic summary wording and the user-facing boundary, use
+`summary-quality.md`. Cleanup plans should judge configuration and expose
+findings, blockers, operations, QA, owner decisions, and next steps; proof tabs
+hold raw D1/D2/D3 evidence.
+
 ## Change Log Columns
 
-```text
-Change ID
-Layer
-Action
-Status
-Before name
-After name
-Object ID(s)
-Change category
-Plain-language summary
-Reason / decision
-Functional impact
-Consent / privacy impact
-QA priority
-QA status
-Owner
-Evidence / notes
-```
-
-Use concise `Action` values: Added, Removed, Renamed, Modified, Renamed +
-Modified, Replaced, No-op / Documented exception.
+Use `change-log-template.md` for the required change-log columns, action
+values, coherence rules, and output boundary.
 
 ## Cleanup Plan And Change Log Coherence
 
-The cleanup plan is the decision source. The change log is the execution record.
-Do not make the change log a second audit or a place for new analysis.
-
-Before delivering both files, verify:
-
-- every change-log row maps to a cleanup operation `Change ID`, except explicit
-  `No-op / Documented exception` rows;
-- object IDs, before names, after names, action, reason/decision, functional
-  impact, consent/privacy impact, QA priority, QA status, owner, and status do
-  not contradict the cleanup plan;
-- if semantic logic checks discover a bad setup after the plan was drafted,
-  update the cleanup operation first, then mirror the executed/generated change
-  in the change log;
-- deferred semantic issues appear as deferred/blocker operations, not as changed
-  rows.
-
-When a change log is produced, validate the header before delivery. The file
-must contain exactly the columns above in the same order unless the user
-explicitly requests a different schema. Do not deliver a shortened operational
-log as the change log.
-
-Keep raw JSON out of stakeholder-facing tabs. Put raw normalized traceability
-details in a separate technical tab only when the user asks for them.
+The cleanup plan is the decision source and the change log is the execution
+record. Before delivering both files, apply the coherence checks in
+`change-log-template.md`.
 
 ## Output Format Selection
 

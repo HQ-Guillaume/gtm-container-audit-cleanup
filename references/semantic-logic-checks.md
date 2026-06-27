@@ -96,6 +96,10 @@ Check whether each variable is valid at the moment each consuming tag fires:
 If the export cannot prove the runtime context, classify the check as runtime
 QA required rather than assuming correctness.
 
+Runtime QA required is not permission to skip export-level logic checks. Still
+inspect source paths, formulas, lookup rows, custom code/config, output shape,
+and consumers before marking only the runtime proof as blocked.
+
 ## Contradiction Patterns
 
 Actively search for contradictions:

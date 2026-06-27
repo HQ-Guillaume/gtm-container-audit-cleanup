@@ -14,7 +14,7 @@ shape, so inspect the source structure before assuming paths.
 - Official Documentation Mapping
 - Standard Ecommerce Variable Pass
 - Importable JSON Cleanup Pass
-- Custom Code Triage
+- Custom Code Export Review
 - Runtime Checks Not Proven By JSON
 - Scalable Audit Loop
 - Usage Status Values
@@ -288,7 +288,7 @@ Do not call a JSON artifact import-ready while generated-file self-audit has
 blank workstreams, missing references, unresolved duplicate/unused/name/logic
 issues, active unverified UA ecommerce paths, or undocumented route blockers.
 
-## Custom Code Triage
+## Custom Code Export Review
 
 Do not paste full custom code unless it is necessary evidence. Summarize:
 
@@ -309,6 +309,17 @@ window. Hashes, external URLs, code length, extracted variable references, and
 duplicate groups are triage signals only. They do not complete semantic
 validation.
 
+Export-level review is mandatory for every active, referenced, risky, unused, or
+cleanup-relevant custom-code object in scope. Runtime QA may still be required
+before changing the object, but the audit must already inspect the exported code
+or custom-template configuration and explain what it appears to do.
+
+If D3 is required, complete D3 from the export before delivery. The export
+usually contains Custom HTML, Custom JavaScript, DLV paths, lookup/regex rows,
+trigger filters, and tag/template parameters. Do not mark D3 as blocked merely
+because D4 runtime proof, server access, CMP traces, or vendor acceptance is
+missing.
+
 For each active Custom HTML tag and each referenced, risky, unused, or
 cleanup-relevant Custom JavaScript variable, create an object-level semantic row
 that records:
@@ -325,10 +336,26 @@ that records:
 - recommended action;
 - semantic status.
 
+Write those fields as compact semantic summaries, not evidence fragments. Use
+`summary-quality.md`: category, source/input, logic/action, output or side
+effect, and judgment. For example, `Reads cmpConsentPurposes and returns
+granted when purpose ,1, is present` is valid proof; `custom code inspected` or
+`no external URL found` is not.
+
 If the export does not provide enough evidence to decide the semantic status,
 mark the object `More info needed` or defer it with the missing runtime,
 business, CMP/legal, or vendor-platform evidence. Do not silently drop it from
 the cleanup plan.
+
+Use `More info needed` only after recording the available D3 evidence. It may
+block mutation, not source/code inspection.
+
+Do not create a cleanup operation whose main action is to review the same code
+later. If export-level code/config inspection has not happened, the current
+deliverable is `Incomplete / blocked` for that object. If inspection has
+happened but live behavior is uncertain, the operation should be runtime QA,
+owner validation, safe rewrite after QA, migration after QA, or no-change
+exception with the exact blocker.
 
 For custom JS variables, evaluate the returned value:
 
@@ -368,15 +395,18 @@ For large containers:
 
 1. Count objects by layer, type, vendor, folder, and naming prefix.
 2. Build dependency maps before judging deletion candidates.
-3. Profile semantic roles and expected payload/output types.
+3. Profile semantic roles and expected payload/output types in a semantic
+   object matrix.
 4. Cluster exact duplicates and similar consolidatable objects by normalized
    name, type, event, vendor ID, market, dataLayer path family, and code hash.
 5. Audit high-risk families first: consent, GA4/ecommerce, Ads/Meta conversions,
    server-side forwarding, custom HTML/JS.
 6. Design consolidation candidates before finalizing cleanup candidates.
 7. Recompute what becomes obsolete after the consolidation design.
-8. Convert triage clusters into object-level semantic status for each
-   meaningful object. Mark unresolved families as deferred, not done.
+8. Convert triage clusters into object-level or family-level semantic matrix
+   rows. High-impact anomalies need object rows; repeated low-risk patterns may
+   use family rows plus anomaly rows. Mark unresolved families as deferred, not
+   done.
 9. Sample low-risk naming/hygiene patterns, then expand only when findings
    repeat.
 10. Reconcile counts by object family: total, inventoried, dependency-mapped,
@@ -384,7 +414,8 @@ For large containers:
    user-excluded, and unresolved.
 11. Treat any nonzero unresolved count as a failed completion gate until the
    row is resolved or explicitly deferred with blocker evidence.
-12. Keep raw object details in files/tables and report only evidence snippets.
+12. Keep raw object details in files/tables and report only decisions, evidence
+   snippets, blockers, operations, and representative exemplars.
 
 ## Usage Status Values
 

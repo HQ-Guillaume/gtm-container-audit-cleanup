@@ -17,13 +17,15 @@ read Markdown instructions and work with exported GTM container JSON.
   standard events, payload shape, consent expectations, and validation methods.
 - Adds completion gates, limited-audit boundaries, severity calibration, vendor
   playbooks, semantic modeling, semantic logic checks, optimization patterns,
-  centralized policies, runtime QA templates, route-aware operation tables,
-  importable JSON checks, and change logs without publishing or creating GTM
-  versions.
+  execution assurance, centralized policies, runtime QA templates, route-aware
+  operation tables, importable JSON checks, and change logs without publishing
+  or creating GTM versions.
 
 ## Core Principles
 
 - Audit deeply by default.
+- Complete required D1-D3 review from export/API/source evidence. Only D4
+  runtime proof can be deferred without making the audit incomplete.
 - Mutate only after explicit approval.
 - Prefer direct GTM API/MCP cleanup in a new workspace for in-place changes.
 - Use importable JSON only when that route is intentionally chosen.
@@ -31,6 +33,9 @@ read Markdown instructions and work with exported GTM container JSON.
 - Apply naming standardization as a mandatory cleanup step unless explicitly
   excluded or blocked by unclear business meaning.
 - Keep proposed final names unique within each GTM layer.
+- Keep cleanup plans and change logs end-user readable. Put deep proof matrices,
+  raw code/config, validator traces, and scratch reasoning in backing files or
+  tabs.
 
 ## Repository Structure
 
@@ -46,10 +51,16 @@ Key references:
 
 - `completion-gates.md`: mandatory workstreams, phase model, and definition of
   done.
+- `execution-assurance.md`: proof artifacts, anti-skip rules, and validation
+  commands for full audits and workbooks.
 - `policy-register.md`: stable policy IDs for repeated safety, naming, JSON,
   mutation, and reporting rules.
 - `limited-audit-protocol.md`: rules for explicitly limited audits.
 - `audit-rubric.md`: full audit checklist and semantic review rules.
+- `audit-domain-checks.md`: governance, implementation, security, hygiene, and
+  scenario-specific audit checklists.
+- `naming-standardization.md`: naming hierarchy, local convention adaptation,
+  case rules, uniqueness, and rename QA.
 - `audit-ga4-ecommerce.md`: GA4/current Google tag, dataLayer, ecommerce, and
   standard variable checks.
 - `audit-consent-server.md`: CMP, consent mode, browser-to-server, and
@@ -59,8 +70,12 @@ Key references:
 - `vendor-playbooks.md`: vendor-specific payload and setup checks.
 - `semantic-model-protocol.md`: internal business objective and measurement
   system model.
+- `semantic-object-matrix.md`: depth tiers, D1-D3 proof requirements, and
+  semantic coverage matrix.
 - `semantic-logic-checks.md`: internal graph, formula, context, and payload
   contradiction checks.
+- `summary-quality.md`: semantic proof-summary levels and user-facing cleanup
+  plan/change-log boundaries.
 - `optimization-patterns.md`: hygiene-to-strategic optimization pattern library.
 - `import-json-policy.md`: same-container merge, View Changes, overwrite, and
   schema-dependency rules for importable JSON.
@@ -70,6 +85,9 @@ Key references:
 - `operation-schema.md`: cleanup aggressiveness, route, and operation schema.
 - `mutation-playbook.md`: pre-write and mutation safety rules.
 - `report-templates.md`: workbook/report/change-log schemas.
+- `workbook-architecture.md`: compact visible workbook tabs, hidden proof tabs,
+  duplicate-column discipline, and workbook validation.
+- `change-log-template.md`: post-cleanup change-log schema and coherence rules.
 
 ## Using The Skill
 
@@ -105,6 +123,8 @@ python scripts/gtm_export_inspect.py path\to\container.json
 python scripts/gtm_validate_artifact.py path\to\artifact.json --mode overwrite
 python scripts/gtm_diff_operations.py original.json cleaned.json
 python scripts/gtm_audit_gate_check.py reconciliation.xlsx
+python scripts/gtm_audit_gate_check.py --strict-evidence audit_workbook.xlsx
+python scripts/gtm_audit_package_check.py container.json audit_workbook.xlsx
 python scripts/gtm_self_test.py
 python scripts/check_release.py
 ```
@@ -119,6 +139,8 @@ recommended for repeatable large-container analysis.
 - Do not rewrite custom HTML by replacing GTM variable references with hardcoded
   values.
 - Do not treat Universal Analytics as the default for ambiguous Google events.
+- Do not mark required D3 work as blocked when the export contains code, source
+  paths, lookup rows, trigger filters, or tag/template parameters.
 - Do not use same-container JSON imports for readable broad rename reviews; use
   direct GTM API/MCP or a name-preserving review artifact instead.
 

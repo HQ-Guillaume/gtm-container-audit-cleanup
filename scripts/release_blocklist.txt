@@ -1,0 +1,29 @@
+# Case-insensitive release privacy and residual blocklist.
+# One regular expression per line. Blank lines and # comments are ignored.
+
+[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}
+C:\\Users
+Downloads
+AppData\\Local\\Temp
+TODO
+FIXME
+HACK
+test ended
+analyst-hardening-compare
+
+# Historical local test/client residue.
+M8K4V9
+ynov
+PR4MQ6J
+laurastar
+KHN8CCM
+daxon
+workspace1000137
+workspace283
+workspace167
+GTM-M8
+GTM-PR
+GTM-KH
+haiqi
+optimize-matter
+Guillaume

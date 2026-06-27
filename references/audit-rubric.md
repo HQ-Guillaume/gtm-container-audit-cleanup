@@ -17,17 +17,7 @@ page source, crawl output, or stakeholder-provided evidence.
 - Name-Based Scope Inference
 - Mandatory Naming Standardization
 - One Tag Gateway Detection
-- Governance
-- Web Container Implementation
-- Security And Custom Code
-- Architecture And Organization
-- Setup Hygiene
-- Consent And Privacy
-- Google Event Classification Baseline
-- Server-Side GTM
-- Vendor Pixels And Marketing Tags
-- Cleanup Heuristics
-- Scenario-Specific Intelligence
+- Domain Checklists
 - Cleanup Completeness
 - Consolidation Review Order
 
@@ -103,6 +93,10 @@ For every audit, cover:
 - currently unused objects and objects that become obsolete after consolidation;
 - object semantics, consumer dependencies, output shape, and trigger context for
   every high-risk or shared object;
+- semantic-object matrix rows for meaningful/high-impact objects, with depth
+  tier, trigger-context status, configuration/source logic status,
+  consent/server status, evidence level, semantic status, and blocker or linked
+  finding/operation;
 - standard ecommerce variables and all consuming tags;
 - custom HTML/JavaScript reference safety;
 - gateway and consolidation opportunities where repeated patterns exist.
@@ -117,6 +111,13 @@ dependency coverage, hashes, URL extraction, duplicate grouping, script output,
 and reference maps are evidence inputs, not semantic validation. Do not mark any
 meaningful object family `Done` when the only completed work is inventory or
 dependency mapping.
+
+For template tags, do not copy every parameter into the report. Inspect the
+meaningful configuration fields for the event/vendor family, infer likely
+outgoing behavior, and decide whether it fits the event name, business role,
+trigger context, variable output types, and destination/platform expectation.
+When a field looks correct only because its variable has a similar name, inspect
+the variable configuration or mark runtime/dataLayer proof required.
 
 Reconcile counts before delivery for each meaningful object family:
 
@@ -138,6 +139,13 @@ the row is resolved or explicitly deferred with a blocker.
 If any mandatory gate fails, deliver the result as `Incomplete / blocked`. Do
 not soften the failure into a normal limitation, and do not omit the affected
 family from the cleanup plan.
+
+Required depth rule: if this rubric, `semantic-object-matrix.md`, or a scenario
+playbook makes D1, D2, or D3 necessary, complete that depth from export/API or
+supplied evidence before delivery. Do not use `Deferred`, `More info needed`, or
+runtime uncertainty to skip source-path, formula, trigger, tag-parameter,
+custom-code, or custom-template inspection that is available in the export.
+Only D4 runtime proof can remain deferred without making the audit incomplete.
 
 ## Official Documentation Contract
 
@@ -288,65 +296,13 @@ Naming standardization is a mandatory cleanup step. Perform it after
 semantic fixes, consolidation design, and deletion decisions are known, so the
 remaining objects receive stable final names and do not need a second rename.
 
-If the user has a house convention, follow it. Otherwise use this default:
-
-| Layer | Required pattern | Examples |
-| --- | --- | --- |
-| Tags | `Vendor - Event/role - Scope/detail` | `GA4 - purchase`, `GA4 - Config`, `Meta - AddToCart - Product line`, `Google Ads - Purchase - FR`, `Pinterest - Base` |
-| Triggers | `Utility/type - Event or condition - Scope/detail` | `CE - purchase`, `PV - All Pages`, `Consent - Meta Granted`, `Block - No Marketing Consent`, `Group - purchase + Google Consent` |
-| Variables | `Type acronym - Variable name/source` | `DLV - ecommerce.purchase.products`, `CJS - Purchase total quantity`, `LT - Hostname to currency`, `RT - Product range from path`, `URL - Hostname` |
-| Folders | `Vendor` or `Domain / Function` | `GA4`, `Meta`, `Google Ads`, `Ecommerce helpers`, `Consent` |
-
-Use these variable type acronyms unless a house style exists:
-
-- `DLV`: Data Layer Variable.
-- `CJS`: Custom JavaScript variable.
-- `LT`: Lookup Table.
-- `RT`: Regex Table.
-- `URL`: URL variable.
-- `1P`: first-party cookie.
-- `JS`: JavaScript variable.
-- `Const`: constant.
-- `Util`: utility/helper when the source is mixed or abstract.
-
-Rules:
-
-- Put the vendor/platform first for tags, because tags are destination-owned.
-- Put the trigger utility/type first for triggers, because triggers are reused by
-  firing mechanics: `CE`, `PV`, `Click`, `Form`, `Timer`, `Consent`, `Block`,
-  `Group`, or another clear utility.
-- Put the variable implementation/source type first for variables, because
-  users need to know whether they are reading dataLayer, transforming data,
-  looking up a value, or parsing the URL.
-- Use the official event name for standard events where applicable, such as
-  `purchase`, `add_to_cart`, `ViewContent`, `AddToCart`, or `Purchase`.
-- Put market, country, language, product range, campaign, pixel ID suffix, or
-  consent detail after the event/role, not before it.
-- Every proposed final name must be unique inside its GTM layer. Before
-  delivering an audit plan, cleanup operation table, rename map, or generated
-  JSON, group proposed names by layer and resolve collisions. Do not propose the
-  same final tag name for multiple tags just because they share a vendor and
-  event role.
-- When a base naming pattern collides, add the smallest meaningful suffix that
-  explains why the object remains separate: trigger event, page type, form type,
-  market, language, product range, campaign, destination ID suffix, pixel/account
-  role, consent category, sequence role such as `Base`, `Config`, `PageView`,
-  `Setup`, `Lead Event`, `Standard Event`, or lifecycle status such as
-  `Legacy`, `Paused`, or `Decommission candidate`.
-- Use an object ID suffix only as a temporary audit placeholder when the real
-  business distinction is unknown. Mark that row as blocked for owner
-  clarification instead of treating the ID-suffixed name as a preferred final
-  production name.
-- Keep ambiguous business tokens such as `ProductLineA`, `CampaignX`, `SegmentY`, or agency
-  acronyms only when the user confirms their meaning or the configuration proves
-  the scope.
-- Do not rename a variable unless all `{{Variable Name}}` references in tags,
-  triggers, variables, templates, custom HTML, and custom JavaScript have been
-  mapped and validated.
-- Record every rename as `before name`, `after name`, object ID, reason,
-  expected behavior impact, and QA status.
-- If standardization is deferred, list the exact object names, blocker, and
-  proposed final pattern.
+Read `naming-standardization.md` before producing rename recommendations,
+cleanup operations, direct GTM/MCP/API writes, or importable JSON involving
+names. The naming hierarchy is: user model first, inferred local convention
+second, default pattern only when no reliable local convention exists. Preserve
+meaningful local acronyms and official casing, but standardize semantically
+equivalent object families and keep every proposed final name unique inside its
+GTM layer.
 
 ## One Tag Gateway Detection
 
@@ -373,232 +329,13 @@ For each gateway candidate, document:
 Prefer gateway patterns only when they reduce real duplication without hiding
 ownership, consent logic, QA responsibility, or vendor-specific payload rules.
 
-## Governance
+## Domain Checklists
 
-Check:
-
-- account and container user counts;
-- whether users, agencies, vendors, and service accounts have appropriate
-  permissions;
-- whether risky roles are limited to owners who need them;
-- 2-step verification and organization security controls;
-- workspace/release process and whether default workspace is used for normal
-  work;
-- version names/descriptions and rollback clarity.
-
-Flag:
-
-- unknown users or broad agency access;
-- excessive publish/admin permissions;
-- no descriptive version history;
-- repeated work in default workspace without process controls.
-
-## Web Container Implementation
-
-Check representative page types and environments:
-
-- GTM script placement in the page `<head>`;
-- `noscript` placement immediately after opening `<body>` where applicable;
-- missing GTM on important page templates;
-- multiple GTM containers and whether each has an owner/purpose;
-- duplicate container loads, with SPA/PWA caveats;
-- CSP or browser/security controls blocking `gtm.js`, preview mode, vendor
-  scripts, or server-side endpoints;
-- dataLayer initialization order and whether important events fire before GTM is
-  ready.
-
-Flag implementation checks as `More info needed` when the export alone cannot
-prove website behavior.
-
-Use `runtime-qa-templates.md` when browser, Tag Assistant, network, CMP, SPA, or
-vendor-platform evidence is needed.
-
-## Security And Custom Code
-
-Check:
-
-- custom HTML tags, custom JavaScript variables, and custom templates;
-- non-script/image pixels implemented through custom HTML instead of safer
-  native/image/template options;
-- outdated templates or unreviewed community templates;
-- hardcoded credentials, tokens, PII, user identifiers, or endpoints;
-- code that injects scripts without consent or origin checks;
-- code that assumes array positions such as `items[0]` when multi-item orders
-  are possible;
-- code that only defines a function, listener, or helper without invoking it,
-  registering it, or proving another tag/page calls it;
-- brittle DOM selectors, regexes, and URL matching.
-
-Prefer template/native tag types over custom HTML when feature parity exists and
-the migration risk is acceptable.
-
-For each custom HTML tag under review:
-
-- identify every `{{variable}}` reference and the expected value format;
-- distinguish intentional hardcoded constants from accidental hardcoding;
-- confirm script/image/noscript behavior and whether it is appropriate inside
-  GTM;
-- confirm that a defined conversion function is actually called or registered;
-  otherwise classify the tag as probable no-op/deferred-delete until runtime or
-  owner evidence proves external use;
-- verify escaping, quoting, JSON serialization, URL encoding, array joining, and
-  null handling;
-- verify that any proposed replacement preserves the original dynamic reference
-  unless a semantic change is explicitly approved.
-
-For every active Custom HTML tag and every referenced, risky, or cleanup-relevant
-Custom JavaScript variable, record an object-level semantic row with:
-
-- purpose;
-- role category, such as vendor loader, event dispatcher, listener, DOM helper,
-  storage/cookie helper, consent/CMP UI, identity helper, payload transformer,
-  obsolete/paused, or other;
-- trigger or consumer context;
-- consent assumption;
-- side effects, including external URLs, dataLayer pushes, cookies, storage,
-  DOM writes, listeners, and network calls;
-- variable references and expected output or side effect;
-- runtime risks;
-- recommended action;
-- semantic status.
-
-Paused or unused custom-code objects still require a decommission rationale
-before they become delete candidates. Custom templates require the same semantic
-review when they are present or consumed by tags/variables.
-
-## Architecture And Organization
-
-Assess whether the account/container structure fits:
-
-- brands, markets, domains, apps, and environments;
-- ownership boundaries and agency/vendor access;
-- web vs server-side tagging separation;
-- release cadence and QA process;
-- naming conventions and folders.
-
-Use the mandatory naming convention above unless a house style exists. Flag
-mixed leading axes, unclear abbreviations, duplicated scopes, and names that
-encode a scope not enforced by the trigger.
-
-## Setup Hygiene
-
-Check:
-
-- tags without firing triggers;
-- triggers with no connected tags;
-- paused tags older than 5 months;
-- objects edited more than 12 months ago that still power important flows;
-- duplicate or near-duplicate tags, triggers, variables, templates, or folders;
-- redundant objects with no known consumer;
-- broken regex/CSS selectors and overly broad conditions;
-- tags attached to non-pageview/non-custom-event triggers without conditions;
-- stale Universal Analytics, Google Optimize, or other sunset/deprecated vendor
-  tags;
-- tags implemented with custom HTML where native GTM tags or maintained
-  templates are safer.
-
-Do not recommend deletion solely because an object is old or paused. Classify as
-`Needs improvement` or `More info needed` until usage and ownership are clear.
-
-Use three cleanup buckets:
-
-- **Currently unused**: no current consumers after a full dependency sweep.
-- **Consolidation obsolete**: currently used, but would be replaced by an
-  approved consolidation/refactor.
-- **Deferred validation**: appears redundant or fragile, but business ownership,
-  runtime evidence, or vendor platform validation is missing.
-
-Report currently unused candidates early, but do not finalize deletion until the
-consolidation design has been reviewed. A broad refactor can make many more
-objects obsolete than the first orphan scan reveals.
-
-## Consent And Privacy
-
-Read `audit-consent-server.md` for CMP, consent mode, regional consent,
-pageview/base consistency, and browser-to-server consent checks. Use this rubric
-section to mark the workstream status and link findings back to the evidence.
-
-Minimum outcome: every meaningful vendor family has consent status, evidence,
-risk, and blocker or no-change decision.
-
-## Google Event Classification Baseline
-
-Read `audit-ga4-ecommerce.md` for Google-event classification, official GA4
-website/dataLayer contracts, GA4 tag checks, ecommerce variable checks, and
-missing-event readiness. Treat ambiguous Google analytics/ecommerce objects as
-GA4/current Google tag candidates unless evidence proves a UA exception.
-
-Minimum outcome: GA4/current Google versus UA exceptions are explicit, official
-dataLayer payload shape is checked, and ecommerce value/item/quantity logic is
-validated before cleanup decisions.
-
-## Server-Side GTM
-
-Read `audit-consent-server.md` when server-side GTM, browser-to-server Google
-tags, first-party endpoints, media-named Google event tags, or server forwarding
-signals appear. Without server-container export/API evidence, network traces, or
-platform logs, classify uncertain transport tags as `server-container validation
-needed` rather than mutating IDs, consent triggers, or paused state.
-
-Minimum outcome: client-side container risks are separated from server-side
-validation blockers.
-
-## Vendor Pixels And Marketing Tags
-
-Read `audit-media-vendors.md` for media/vendor base tags, conversion events,
-payload shape, cross-vendor parity, and media signal quality. Read
-`vendor-playbooks.md` for vendor-specific details and `source-map.md` for
-official documentation entry points.
-
-Minimum outcome: event role, consent, sequencing, payload shape, value/currency,
-IDs, deduplication, and platform optimization use are checked or deferred with
-blockers.
-
-## Cleanup Heuristics
-
-Prioritize changes that improve:
-
-- privacy compliance and consent consistency;
-- revenue/conversion accuracy;
-- GA4 ecommerce payload correctness;
-- maintainability through reusable variables and triggers;
-- performance by reducing duplicate vendors, redundant loaders, and custom HTML;
-- release safety through naming, folders, workspaces, and version descriptions.
-
-Prefer consolidation when:
-
-- multiple tags differ only by ID, market, or vendor parameter and can use lookup
-  tables safely;
-- repeated custom JS logic appears in several tags;
-- trigger conditions can be represented by a reusable helper variable;
-- multiple consent triggers express the same rule with slightly different names.
-- many market/page/event triggers share the same event plus one hostname, path,
-  language, or product-line condition;
-- several variables read sibling paths from the same ecommerce array and could be
-  replaced by one typed helper object or item-array transformer;
-- vendor tags repeat the same payload construction and differ only by event name
-  or vendor ID.
-
-Avoid over-consolidation when it hides business ownership, creates a single risky
-mega-tag, or makes QA harder.
-
-## Scenario-Specific Intelligence
-
-Before finalizing findings, decide whether any of these scenarios apply. If yes,
-load `operation-schema.md` and include the scenario in the cleanup plan.
-
-| Scenario | Signals | Extra audit checks |
-| --- | --- | --- |
-| Ecommerce accuracy | GA4 ecommerce, Ads conversions, Meta/TikTok/Pinterest/Criteo/affiliate product fields. | Current event payload, item arrays, value/currency, transaction IDs, multi-item handling, vendor field shape. |
-| Consent/CMP | Didomi, OneTrust, Cookiebot, Axeptio, Commanders Act, native consent settings, Consent Initialization triggers. | Default/update timing, regional rules, pageview/base consistency, legal-owner blockers. |
-| SPA/PWA | History triggers, route variables, virtual pageview tags, frontend framework URLs. | Runtime route changes, duplicate pageviews, stale dataLayer state, async ecommerce pushes. |
-| Multi-market/language | Country codes, hostnames, currencies, language folders, market-specific IDs. | Whether scope is enforced by triggers/variables, unclear token clarification, lookup/regex consolidation feasibility. |
-| One-tag gateway | Dispatcher custom HTML, lookup-table routing, shared loaders, server endpoint. | Blast radius, observability, consent routing, vendor-specific payload preservation. |
-| Server-side GTM | Server container, first-party endpoint, GA4 client, transformations, CAPI tags. | Browser-to-server payload, server-to-vendor payload, consent forwarding, deduplication IDs, monitoring. |
-| Emergency fix | User asks for fast repair or production breakage. | Limit mutation scope, record skipped cleanup, recommend full follow-up audit. |
-
-Do not force every scenario into every audit. Select scenarios from evidence and
-state `Not applicable` when the pattern is absent.
+Read `audit-domain-checks.md` for governance, web implementation, custom code,
+architecture, setup hygiene, consent, Google events, server-side GTM, vendor
+pixels, cleanup heuristics, and scenario-specific intelligence. Use this rubric
+for severity, evidence, semantic depth, and cleanup completeness; use the domain
+checklists for area-specific coverage.
 
 ## Cleanup Completeness
 

@@ -149,23 +149,9 @@ def single_member_groups(cv: dict[str, Any]) -> list[dict[str, Any]]:
     return groups
 
 
-def validate(path: Path, original: Path | None, mode: str) -> dict[str, Any]:
-    artifact_cv = load_container_version(path)
-    original_cv = load_container_version(original) if original else None
-    effective_cv = (
-        apply_patch(original_cv, artifact_cv)
-        if original_cv and mode in PATCH_MODES
-        else artifact_cv
-    )
-    missing = missing_references(effective_cv)
-    original_missing = missing_references(original_cv) if original_cv else None
-    errors = []
-    warnings = []
-
-    dupes = duplicate_ids(effective_cv)
-    if dupes:
-        errors.append({"check": "unique_ids", "details": dupes})
-
+def new_missing_reference_blockers(
+    missing: dict[str, Any], original_missing: dict[str, Any] | None
+) -> dict[str, Any]:
     missing_blockers = {}
     for key, value in missing.items():
         if key == "referencedCustomTemplateIds" or not value:
@@ -177,12 +163,16 @@ def validate(path: Path, original: Path | None, mode: str) -> dict[str, Any]:
                 missing_blockers[key] = new_values
         else:
             missing_blockers[key] = value
-    if missing_blockers:
-        errors.append({"check": "missing_references", "details": missing_blockers})
+    return missing_blockers
 
+
+def custom_template_layer_errors(
+    artifact_cv: dict[str, Any], original_cv: dict[str, Any] | None, mode: str
+) -> list[dict[str, Any]]:
+    errors = []
     patch_missing = missing_references(artifact_cv)
     if patch_missing["referencedCustomTemplateIds"] and not (artifact_cv.get("customTemplate") or []):
-        errors.append({"check": "custom_template_layer_missing", "details": missing["referencedCustomTemplateIds"]})
+        errors.append({"check": "custom_template_layer_missing", "details": patch_missing["referencedCustomTemplateIds"]})
 
     if patch_missing["referencedCustomTemplateIds"]:
         all_templates = artifact_cv.get("customTemplate", []) or []
@@ -207,17 +197,33 @@ def validate(path: Path, original: Path | None, mode: str) -> dict[str, Any]:
                         "details": missing_original_templates,
                     }
                 )
+    return errors
 
+
+def built_in_variable_errors(
+    artifact_cv: dict[str, Any], original_cv: dict[str, Any] | None
+) -> list[dict[str, Any]]:
     if original_cv and (original_cv.get("builtInVariable") or []) and "builtInVariable" not in artifact_cv:
-        errors.append({"check": "built_in_variables_omitted", "details": "Source export has enabled built-ins but artifact omits builtInVariable."})
+        return [{"check": "built_in_variables_omitted", "details": "Source export has enabled built-ins but artifact omits builtInVariable."}]
+    return []
 
+
+def trigger_group_messages(effective_cv: dict[str, Any], mode: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    errors = []
+    warnings = []
     groups = single_member_groups(effective_cv)
     if groups and mode in {"direct-readback", "overwrite", "new-container"}:
         errors.append({"check": "single_member_trigger_groups", "details": groups})
     elif groups:
         warnings.append({"check": "single_member_trigger_groups_route_limited", "details": groups})
+    return errors, warnings
 
+
+def view_changes_churn_errors(
+    original_cv: dict[str, Any] | None, artifact_cv: dict[str, Any], mode: str
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     churn = name_churn(original_cv, artifact_cv) if original_cv else {}
+    errors = []
     if mode == "same-container-view" and churn:
         rename_count = sum(layer["renamedExistingCount"] for layer in churn.values())
         new_count = sum(layer["newIdsCount"] for layer in churn.values())
@@ -228,6 +234,39 @@ def validate(path: Path, original: Path | None, mode: str) -> dict[str, Any]:
                     "details": {"renamedExisting": rename_count, "newIds": new_count},
                 }
             )
+    return churn, errors
+
+
+def validate(path: Path, original: Path | None, mode: str) -> dict[str, Any]:
+    artifact_cv = load_container_version(path)
+    original_cv = load_container_version(original) if original else None
+    effective_cv = (
+        apply_patch(original_cv, artifact_cv)
+        if original_cv and mode in PATCH_MODES
+        else artifact_cv
+    )
+    missing = missing_references(effective_cv)
+    original_missing = missing_references(original_cv) if original_cv else None
+    errors = []
+    warnings = []
+
+    dupes = duplicate_ids(effective_cv)
+    if dupes:
+        errors.append({"check": "unique_ids", "details": dupes})
+
+    missing_blockers = new_missing_reference_blockers(missing, original_missing)
+    if missing_blockers:
+        errors.append({"check": "missing_references", "details": missing_blockers})
+
+    errors.extend(custom_template_layer_errors(artifact_cv, original_cv, mode))
+    errors.extend(built_in_variable_errors(artifact_cv, original_cv))
+
+    group_errors, group_warnings = trigger_group_messages(effective_cv, mode)
+    errors.extend(group_errors)
+    warnings.extend(group_warnings)
+
+    churn, churn_errors = view_changes_churn_errors(original_cv, artifact_cv, mode)
+    errors.extend(churn_errors)
 
     return {
         "artifact": str(path),
