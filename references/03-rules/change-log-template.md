@@ -28,36 +28,29 @@ GTM View Changes, while still avoiding raw JSON, code dumps, and proof matrices.
 
 ## Required Columns
 
-Use exactly these columns unless the user explicitly requests another schema:
+Use the compact end-user schema by default:
 
 ```text
 Change ID
-Operation ID
-Layer
-Object ID
-Object type
-Before name
-After name
-Action
-Before state / value
-After state / value
-Reason / decision
-Functional impact
-Consent / privacy impact
-Dependencies updated
-QA priority
-QA method
-QA status
-Rollback note
-Evidence / source
-Owner / blocker
+Affected object(s)
+What changed
+Why / impact
+QA / rollback
 Status
 ```
 
-`Before state / value` and `After state / value` must describe the behavior,
-name, dependency, trigger routing, payload field, variable source, consent
-setting, or folder/template relationship that actually changed. Do not fill
-them with generic text such as `updated`, `reviewed`, or `see GTM`.
+`What changed` must include the human-visible before/after behavior, name,
+dependency, trigger routing, payload field, variable source, consent setting,
+or folder/template relationship that actually changed. Do not fill it with
+generic text such as `updated`, `reviewed`, or `see GTM`.
+
+`Why / impact` must include the linked operation ID when available and explain
+the business, measurement, consent, privacy, or maintainability consequence.
+
+Use a detailed technical appendix only when the user explicitly asks for it or
+when a validator/workflow requires it. In that case, keep the appendix separate
+or hidden and make every detailed field distinct. Do not expose a 15-25 column
+change log as the default user-facing file.
 
 Recommended action values:
 
@@ -75,10 +68,10 @@ Recommended action values:
 
 Before delivering both cleanup plan and change log:
 
-- every change-log row maps to a cleanup operation `Change ID`, except explicit
+- every change-log row maps to a cleanup operation ID, except explicit
   `No-op / Documented exception` rows;
-- object IDs, before names, after names, action, reason/decision, impact, QA,
-  owner, and status do not contradict the cleanup plan;
+- object IDs/names, before/after behavior, action, reason/decision, impact,
+  QA, owner/blocker, and status do not contradict the cleanup plan;
 - if semantic checks discover a bad setup after the plan was drafted, update the
   cleanup operation first, then mirror the executed/generated change in the
   change log;
