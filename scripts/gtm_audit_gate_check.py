@@ -214,6 +214,26 @@ CUSTOM_CODE_SUMMARY_FIELDS = [
     "cleanup_recommendation",
 ]
 
+CLEANUP_PLAN_TAXONOMY_FIELDS = [
+    "area_problem_type",
+    "area",
+    "problem_type",
+]
+
+CLEANUP_PLAN_PROBLEM_FIELDS = [
+    "problem_evidence",
+    "issue_evidence",
+    "issue_or_evidence",
+    "problem",
+]
+
+CLEANUP_PLAN_ACTION_FIELDS = [
+    "action_priority_qa",
+    "recommended_action",
+    "action_qa_status",
+    "qa_status",
+]
+
 PLACEHOLDER_PATTERNS = [
     re.compile(r"\bperform\s+line[- ]level(?:\s+custom[- ]code)?\s+review\b", re.I),
     re.compile(r"\breview\s+custom\s+code\b", re.I),
@@ -259,6 +279,14 @@ GENERIC_SUMMARY_PATTERNS = [
     re.compile(r"\bobject\s+configuration,\s*GTM\s+event,\s*browser,\s*DOM,\s*storage,\s*or\s*template\s+fields\b", re.I),
     re.compile(r"\bloads,\s*writes,\s*pushes,\s*or\s*mutates\s+browser\s+state\b", re.I),
     re.compile(r"\btags\s+and\s+downstream\s+reports\s+need\s+event\s+context\b", re.I),
+    re.compile(r"^\s*semantic\s+(?:issue|problem)\s*$", re.I),
+    re.compile(r"^\s*media\s+(?:issue|problem)\s*$", re.I),
+    re.compile(r"^\s*configuration\s+(?:issue|problem)\s*$", re.I),
+    re.compile(r"^\s*tracking\s+(?:issue|problem)\s*$", re.I),
+    re.compile(r"^\s*tag\s+(?:issue|problem)\s*$", re.I),
+    re.compile(r"^\s*trigger\s+(?:issue|problem)\s*$", re.I),
+    re.compile(r"^\s*variable\s+(?:issue|problem)\s*$", re.I),
+    re.compile(r"^\s*custom[- ]code\s+(?:issue|problem)\s*$", re.I),
 ]
 
 GENERIC_D3_VALUES = {
@@ -1109,6 +1137,83 @@ def validate_cleanup_plan_parent_detail(
     return errors
 
 
+def first_present(headers: Dict[str, str], candidates: List[str]) -> str:
+    for candidate in candidates:
+        if candidate in headers:
+            return headers[candidate]
+    return ""
+
+
+def validate_cleanup_plan_human_taxonomy(
+    workbook_rows: Dict[str, List[Dict[str, Any]]]
+) -> List[str]:
+    errors: List[str] = []
+    for sheet_name, rows in workbook_rows.items():
+        normalized = normalize_sheet_name(sheet_name)
+        if "cleanup" not in normalized or "plan" not in normalized:
+            continue
+        if not rows:
+            continue
+        headers = {normalize_header(header): header for header in rows[0]}
+        level_key = headers.get("level")
+        taxonomy_key = first_present(headers, CLEANUP_PLAN_TAXONOMY_FIELDS)
+        problem_key = first_present(headers, CLEANUP_PLAN_PROBLEM_FIELDS)
+        action_key = first_present(headers, CLEANUP_PLAN_ACTION_FIELDS)
+        if not taxonomy_key:
+            errors.append(
+                f"{sheet_name}: cleanup plan needs an Area / problem type column "
+                "so rows use human problem taxonomy instead of internal scan labels"
+            )
+        if not problem_key:
+            errors.append(
+                f"{sheet_name}: cleanup plan needs a Problem / evidence column "
+                "with a concrete user-facing issue and evidence example"
+            )
+        if not action_key:
+            errors.append(
+                f"{sheet_name}: cleanup plan needs an Action / priority / QA column "
+                "with the proposed action, priority/confidence, and QA or blocker"
+            )
+        if not taxonomy_key or not problem_key or not action_key:
+            continue
+
+        for index, row in enumerate(rows, start=2):
+            level = str(row.get(level_key) or "").strip().lower() if level_key else "single"
+            if level == "summary":
+                continue
+            taxonomy = str(row.get(taxonomy_key) or "").strip()
+            problem = str(row.get(problem_key) or "").strip()
+            action = str(row.get(action_key) or "").strip()
+            if generic_or_blank(taxonomy) or word_count(taxonomy) < 3:
+                errors.append(
+                    f"{sheet_name} row {index}: Area / problem type is missing "
+                    "a human area plus second-level problem"
+                )
+            if generic_or_blank(problem) or word_count(problem) < 7:
+                errors.append(
+                    f"{sheet_name} row {index}: Problem / evidence is too short "
+                    "to explain the visible issue and evidence"
+                )
+            if generic_or_blank(action) or word_count(action) < 5:
+                errors.append(
+                    f"{sheet_name} row {index}: Action / priority / QA is too "
+                    "short to guide action, QA, priority, or blocker"
+                )
+            for field, text in (
+                (taxonomy_key, taxonomy),
+                (problem_key, problem),
+                (action_key, action),
+            ):
+                for pattern in GENERIC_SUMMARY_PATTERNS:
+                    if pattern.search(text):
+                        errors.append(
+                            f"{sheet_name} row {index} field {field}: generic "
+                            f"internal label {pattern.pattern!r}; translate it "
+                            "into a concrete human problem"
+                        )
+    return errors
+
+
 def workbook_architecture_warnings(workbook_rows: Dict[str, List[Dict[str, Any]]]) -> List[str]:
     warnings: List[str] = []
     if len(workbook_rows) > 8:
@@ -1185,6 +1290,7 @@ def validate_strict_evidence(path: Path, reconciliation_rows: List[Dict[str, Any
 
     errors.extend(validate_placeholder_language(workbook_rows))
     errors.extend(validate_cleanup_plan_parent_detail(workbook_rows))
+    errors.extend(validate_cleanup_plan_human_taxonomy(workbook_rows))
     warnings.extend(workbook_architecture_warnings(workbook_rows))
     if not custom_code_required(reconciliation_rows) and not custom_name:
         warnings.append("strict evidence: no custom-code review sheet found; treated as not in scope")

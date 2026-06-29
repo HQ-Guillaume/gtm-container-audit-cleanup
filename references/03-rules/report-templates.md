@@ -388,10 +388,10 @@ Recommended `02 Cleanup Plan` columns:
 ```text
 ID:
 Level: Summary | Detail | Single
+Area / problem type:
 Affected object(s):
-Issue / evidence:
-Recommended action:
-QA / status:
+Problem / evidence:
+Action / priority / QA:
 ```
 
 Use `Summary` rows only as visual parents. Put concrete object findings
@@ -404,6 +404,14 @@ same evidence, action, QA, and rollback: unused variables/triggers/tags, exact
 duplicates, naming convention, folder organization, and other mechanical
 cleanup. Split into detail rows as soon as the business logic, dependency risk,
 or recommended action differs by object.
+
+Before writing visible rows, use `human-problem-taxonomy.md` to translate
+operation packets into human problem rows. `Area / problem type` should be
+specific enough for a web analyst to scan, such as `Event firing logic /
+Over-firing`, `Media platform tracking / Wrong product scope`, or `Consent &
+compliance / Consent mismatch`. Do not write rows whose visible problem is only
+`semantic issue`, `configuration issue`, `tracking issue`, or another internal
+scan label.
 
 Recommended `03 D3 Evidence` columns:
 

@@ -1,5 +1,11 @@
 __pycache__/
 .ruff_cache/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
 *.pyc
 *.pyo
 *.tmp

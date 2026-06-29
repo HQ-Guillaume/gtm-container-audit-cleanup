@@ -10,6 +10,7 @@ execution route.
 - Route Decision Matrix
 - Operation Object Schema
 - Operation Packet Fields
+- Human Problem Row Fields
 - Operation Compiler
 - Scenario Playbooks
 - Cleanup Intelligence Rules
@@ -187,10 +188,11 @@ Required packet fields:
 | `resolution_status` | `cleanup_operation`, `documented_exception`, `runtime_blocker`, `owner_decision_needed`, or `not_applicable`. |
 | `source_finding_ids` | Deterministic, semantic, and technical finding IDs or row IDs that justify the packet. |
 
-The visible cleanup plan should be a translation of these packets, not a new
-analysis layer. If an operation packet cannot say the exact proposed action,
-expected clean state, QA, and rollback, the visible row must be a blocker or
-owner decision rather than a cleanup action.
+The visible cleanup plan should be a translation of these packets through
+`human-problem-taxonomy.md`, not a new analysis layer. If an operation packet
+cannot say the exact proposed action, expected clean state, QA, and rollback,
+the visible row must be a blocker or owner decision rather than a cleanup
+action.
 
 Shared action vocabulary:
 
@@ -206,6 +208,27 @@ Shared action vocabulary:
   needed before mutation;
 - `owner_decision_needed`: business/legal/platform intent is needed;
 - `keep`: no cleanup action after validation.
+
+## Human Problem Row Fields
+
+Compile one human problem row from one operation packet, or from a parent/detail
+group of packets that share the same root cause, expected clean state, action,
+QA, and rollback.
+
+Required visible fields:
+
+| Field | Required meaning |
+| --- | --- |
+| `id` | Operation ID or parent/detail ID linked to operation packets. |
+| `level` | Summary, Detail, or Single. |
+| `area_problem_type` | Human area plus second-level problem, such as `Media platform tracking / Duplicate firing`. |
+| `affected_objects` | User-readable object/event/vendor/scope names, with IDs when useful. |
+| `problem_evidence` | Plain-language problem plus one evidence example or blocker. |
+| `action_priority_qa` | Recommended action, priority/confidence, QA or owner decision. |
+
+The row must not be only `semantic issue`, `media issue`, `configuration
+problem`, `tracking issue`, `tag issue`, `variable issue`, or `custom-code
+issue`. Those labels may exist in proof tabs but not as the visible problem.
 
 ## Operation Compiler
 
@@ -239,14 +262,15 @@ Compile audit findings into operations in this order:
 13. Create operation packets with current behavior, problem, expected clean
    state, exact proposed action, preconditions, QA, rollback, confidence, and
    source finding IDs.
-14. Choose recommended cleanup aggressiveness.
-15. Add selectable aggressiveness options and tradeoffs for each material
+14. Translate operation packets into human problem rows.
+15. Choose recommended cleanup aggressiveness.
+16. Add selectable aggressiveness options and tradeoffs for each material
    operation.
-16. Choose execution route.
-17. Generate operations with route-specific mutation style.
-18. Validate dependencies and blockers.
-19. Batch operations for execution.
-20. Run post-batch readback and update statuses.
+17. Choose execution route.
+18. Generate operations with route-specific mutation style.
+19. Validate dependencies and blockers.
+20. Batch operations for execution.
+21. Run post-batch readback and update statuses.
 
 For direct GTM/MCP/API, prefer `Update` or `Rename` on existing IDs. Use
 `Replace` only when a new reusable concept is needed or the API/tool behavior

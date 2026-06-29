@@ -26,6 +26,8 @@ The change log should contain only what changed, why it changed, impact, QA,
 owner/status, and rollback/evidence notes needed for review. It must be
 granular enough for the user to understand every applied change without opening
 GTM View Changes, while still avoiding raw JSON, code dumps, and proof matrices.
+Use the same human area/problem vocabulary as the cleanup plan, but write in
+completed-change language.
 
 ## Required Tabs
 
@@ -43,23 +45,15 @@ modification element per line.
 
 ## Detailed Change Columns
 
-Use this detailed end-user schema by default for `Change Log Details`:
+Use this compact end-user schema by default for `Change Log Details`:
 
 ```text
 Change ID
-Operation ID
-Layer
-Object ID
-Before name
-After name
-Action
-Before state/value/dependency
-After state/value/dependency
-Why / linked finding
-Impact
-QA status
-Rollback note
-Status
+Area / object
+Change made
+Before
+After
+Reason / QA / status
 ```
 
 Each row must describe the human-visible before/after behavior, name,
@@ -68,12 +62,18 @@ folder relationship, template state, or code behavior that actually changed.
 Do not fill any row with generic text such as `updated`, `reviewed`, or
 `see GTM`.
 
-`Why / impact` must include the linked operation ID when available and explain
-the business, measurement, consent, privacy, or maintainability consequence.
+`Reason / QA / status` must include or link to the operation ID when available
+and explain the business, measurement, consent, privacy, or maintainability
+consequence. Put full operation IDs, source finding IDs, rollback source,
+validator evidence, and raw before/after diffs in hidden proof tabs when needed.
 
 Use hidden proof tabs only for raw JSON, operation packets, validator evidence,
 and source finding IDs. The detail change log itself is user-facing because it
 is the review record of the executed cleanup.
+
+Use `references/03-rules/human-problem-taxonomy.md` for wording and grouping.
+Do not turn a completed change into an internal label such as `semantic issue
+fixed`; say what changed and what the user should expect after the change.
 
 Recommended action values:
 
@@ -103,6 +103,8 @@ Before delivering both cleanup plan and change log:
 - naming, JSON route, and rollback notes match the selected execution route.
 - the row can be understood on its own by an analytics or business owner who
   has not opened GTM View Changes.
+- the row uses human area/problem vocabulary consistent with the cleanup plan,
+  but does not repeat audit proof or introduce a new finding.
 
 ## Output Boundary
 

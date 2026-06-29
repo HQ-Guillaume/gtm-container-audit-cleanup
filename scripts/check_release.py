@@ -30,6 +30,18 @@ PROHIBITED_ROOT_FILES = {
     "INSTALLATION_GUIDE.md",
     "QUICK_REFERENCE.md",
 }
+GENERATED_ARTIFACT_DIRS = {
+    "__pycache__": "Python cache directory",
+    ".ruff_cache": "Ruff cache directory",
+    ".pytest_cache": "pytest cache directory",
+    ".mypy_cache": "mypy cache directory",
+    ".venv": "local virtual environment",
+    "venv": "local virtual environment",
+    "htmlcov": "coverage report directory",
+}
+GENERATED_ARTIFACT_FILES = {
+    ".coverage": "coverage data file",
+}
 
 
 def repo_root() -> Path:
@@ -185,9 +197,22 @@ def check_forbidden_skill_files(root: Path) -> list[str]:
 
 def check_generated_artifacts(root: Path) -> list[str]:
     errors = []
-    for path in sorted(root.rglob("__pycache__")):
-        errors.append(f"Generated Python cache directory must be removed: {path.relative_to(root)}")
+    for path in sorted(root.rglob("*")):
+        if ".git" in path.parts:
+            continue
+        if path.is_dir() and path.name in GENERATED_ARTIFACT_DIRS:
+            errors.append(
+                f"Generated {GENERATED_ARTIFACT_DIRS[path.name]} must be removed: "
+                f"{path.relative_to(root)}"
+            )
+        elif path.is_file() and path.name in GENERATED_ARTIFACT_FILES:
+            errors.append(
+                f"Generated {GENERATED_ARTIFACT_FILES[path.name]} must be removed: "
+                f"{path.relative_to(root)}"
+            )
     for path in sorted(root.rglob("*.pyc")):
+        if ".git" in path.parts:
+            continue
         errors.append(f"Generated Python bytecode file must be removed: {path.relative_to(root)}")
     return errors
 

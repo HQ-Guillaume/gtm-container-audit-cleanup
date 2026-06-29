@@ -62,6 +62,14 @@ Cleanup plans and change logs should include only:
 - owner decision or blocker;
 - status and next action.
 
+Use `human-problem-taxonomy.md` to translate operation packets into human
+problem rows before writing cleanup plans or change logs. The visible problem
+must be a concrete measurement, marketing, consent, payload, performance, or
+maintenance issue, not an internal scan label. For example, use `Meta Purchase
+appears to fire twice` rather than `media semantic issue`, and use `Analytics
+and ads consent appear to use the same rule` rather than `consent variable
+mismatch`.
+
 Keep these in proof tabs or technical appendices, not in the main cleanup plan
 or change log:
 
@@ -150,6 +158,14 @@ summary:
 - `object configuration, GTM event, browser, DOM, storage, or template fields`
 - `loads, writes, pushes, or mutates browser state`
 - `tags and downstream reports need event context`
+- `semantic issue`
+- `media issue`
+- `configuration problem`
+- `tracking issue`
+- `tag issue`
+- `trigger issue`
+- `variable issue`
+- `custom-code issue`
 
 These are evidence signals or categories, not D3 proof. Replace them with the
 exact literal behavior, actual consumers, judgment, and cleanup implication.

@@ -40,6 +40,7 @@ source export/API evidence
 -> semantic_findings.json
 -> technical_code_findings.json
 -> reconciled_operations.json
+-> human_problem_rows
 -> compact user-facing cleanup plan with hidden proof tabs
 ```
 
@@ -75,9 +76,10 @@ python scripts/gtm_audit_package_build.py container.json --out-dir audit-package
 ```
 
 The visible cleanup plan must be generated from `reconciled_operations.json` or
-an equivalent operation-packet table. Do not generate the visible cleanup plan
-directly from baseline rows, semantic rows, custom-code rows, or an inventory
-summary.
+an equivalent operation-packet table, then translated through
+`references/03-rules/human-problem-taxonomy.md`. Do not generate the visible
+cleanup plan directly from baseline rows, semantic rows, custom-code rows, or
+an inventory summary.
 
 ## Required Stages
 
@@ -94,8 +96,9 @@ Run the stages in this order for full audits and cleanup plans:
 6. Semantic D1-D3 review.
 7. Finding reconciliation and cross-layer double-check.
 8. Operation-packet compiler.
-9. Cleanup-plan compiler from operation packets.
-10. Final gates.
+9. Human problem taxonomy compiler from operation packets.
+10. Cleanup-plan compiler from human problem rows.
+11. Final gates.
 
 Do not jump directly from inventory into semantic interpretation. Operations are
 not cleanup-ready until the relevant deterministic, semantic, and technical
@@ -387,10 +390,11 @@ or by the exact decision/evidence blocker.
 The cleanup plan should remain compact and human-readable. Compactness must not
 hide concrete findings.
 
-Write visible rows for non-specialists: what is wrong, why it matters, what is
-expected after cleanup, what should be done next, and how to QA it. Define jargon
-in plain words, for example "old Universal Analytics ecommerce format" instead
-of only "UA Enhanced Ecommerce".
+Write visible rows for non-specialists using
+`human-problem-taxonomy.md`: area, second-level problem type, affected objects,
+plain evidence, expected clean behavior, action, priority, QA, and blocker.
+Define jargon in plain words, for example "old Universal Analytics ecommerce
+format" instead of only "UA Enhanced Ecommerce".
 
 Allowed:
 
@@ -408,6 +412,9 @@ Not allowed:
 - rows whose main action is `simplify`, `consolidate`, `harden`, or `fix`
   without saying what exact object state should change or what decision blocks
   that change;
+- rows whose problem is only `semantic issue`, `media issue`,
+  `configuration problem`, `tracking issue`, `tag issue`, `variable issue`, or
+  another internal scan/category label;
 - family summaries that hide distinct duplicate, risky, or blocked objects;
 - real change logs before cleanup execution.
 
@@ -424,6 +431,7 @@ The audit or cleanup plan is incomplete when:
 - semantic or technical findings in scope are missing from the reconciliation
   layer;
 - visible cleanup rows are not backed by operation packets;
+- visible cleanup rows are not translated into human area/problem rows;
 - cleanup plan rows are not linked to source findings;
 - final output claims completion despite unresolved blockers.
 

@@ -36,6 +36,9 @@ Every deliverable must account for:
 - reconciled operation packets that combine deterministic, semantic, and
   technical scan outputs by object identity before the visible cleanup plan is
   produced;
+- human problem rows translated from operation packets with area, second-level
+  problem type, affected objects, plain evidence, action, priority, QA, and
+  source operation/finding traceability;
 - measurement diagnosis: business model, decision outcomes, conversion
   hierarchy, vendor/platform roles, and expected data contracts for meaningful
   object families;
@@ -83,6 +86,7 @@ Track each mandatory workstream through these phases:
 | Measurement diagnosis | Business model, decision outcome, conversion hierarchy, platform role, expected data contract, and intent blockers recorded for meaningful families. |
 | Semantic validation | Purpose, expected behavior, evidence, risk, confidence, and semantic status assigned. |
 | Finding reconciliation | Deterministic, semantic, and technical findings matched by object identity, conflicts resolved, and operation packets created or blockers recorded. |
+| Human problem translation | Operation packets translated into user-facing problem rows without inventing, suppressing, or over-grouping findings. |
 | Cleanup decision | Keep/fix/consolidate/delete/defer/no-change decision recorded with route, aggressiveness options, dependencies, QA, and blocker where applicable. |
 | Report reconciliation | Counts reconcile and the report/workbook contains required rows or explicit blockers. |
 
@@ -167,6 +171,12 @@ required phase is `Done`, `Not applicable`, or `User-excluded`.
   visible cleanup detail row links to an operation packet or an explicit
   blocker. A plan generated directly from scan summaries without operation
   packets is incomplete.
+- `Human problem translation`: every visible cleanup-plan row has a human area
+  and second-level problem type from `human-problem-taxonomy.md`, a concrete
+  business/measurement issue, affected object(s), evidence example, action, QA,
+  priority/status, and operation/finding traceability. Rows that say only
+  `semantic issue`, `configuration problem`, `tracking issue`, or similar
+  internal labels are incomplete.
 - `Optimization patterns`: exact duplicates, unused candidates, reusable
   trigger/variable opportunities, dynamic lookup/regex/helper opportunities,
   semantic consolidation, and strategic data-contract blockers were considered

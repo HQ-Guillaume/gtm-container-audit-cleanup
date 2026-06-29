@@ -60,6 +60,11 @@ The source model maps where objects and references are located. It is only a
 navigation aid. It does not create, suppress, or downgrade findings. Each check
 must verify the raw export, API evidence, configuration, or code directly.
 
+After evidence is reconciled, findings are translated into human problem rows.
+The visible cleanup plan should say things like "Meta Purchase appears to fire
+twice" or "Google Ads IGGI add_to_cart fires for all products", not only
+"semantic issue" or "media tracking problem".
+
 ## Inputs
 
 The skill can work from one or more of these sources:

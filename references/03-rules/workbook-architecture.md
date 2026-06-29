@@ -44,10 +44,10 @@ Default `02 Cleanup Plan` columns:
 
 - `ID`
 - `Level`
+- `Area / problem type`
 - `Affected object(s)`
-- `Issue / evidence`
-- `Recommended action`
-- `QA / status`
+- `Problem / evidence`
+- `Action / priority / QA`
 
 Add extra visible tabs only when the user asks, the execution route needs a
 separate working tracker, or merging unrelated audiences would make the visible
@@ -73,6 +73,13 @@ cleanup buckets. Use detail rows when any object in the bucket has a different
 semantic reason, different dependency risk, different owner blocker, or
 different recommended action.
 
+Apply `references/03-rules/human-problem-taxonomy.md` before writing visible
+rows. `Area / problem type` should combine a human area and a second-level
+problem, for example `Media platform tracking / Duplicate firing` or
+`Consent & compliance / Consent mismatch`. Do not use internal labels such as
+`semantic issue`, `media issue`, `configuration problem`, or `custom-code
+review` as the visible problem.
+
 ## Change Log Workbooks
 
 For a real post-cleanup change log, use two visible tabs:
@@ -88,6 +95,19 @@ summary. It should still be readable by non-specialists: plain before/after
 wording, linked operation ID, impact, QA status, rollback note, and status.
 Keep operation packets, raw diffs, validators, and source findings in hidden
 proof tabs.
+
+Default visible change-log detail columns:
+
+- `Change ID`
+- `Area / object`
+- `Change made`
+- `Before`
+- `After`
+- `Reason / QA / status`
+
+Keep full operation IDs, source finding IDs, raw diffs, rollback source,
+validator output, and technical proof in hidden tabs when the compact visible
+schema would otherwise become too wide.
 
 ## Hidden Proof Tabs
 

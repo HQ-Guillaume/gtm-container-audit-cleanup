@@ -157,7 +157,7 @@ Load only the files required by scope:
 | Semantic business logic and object-depth evidence | `references/03-rules/semantic-model-protocol.md`, `references/03-rules/semantic-object-matrix.md`, `references/03-rules/semantic-logic-checks.md` |
 | Naming review, rename map, case/acronym rules, rename QA | `references/03-rules/naming-standardization.md` |
 | Cleanup patterns, route choice, aggressiveness, operations, mutation, JSON | `references/03-rules/optimization-patterns.md`, `references/03-rules/operation-schema.md`, `references/03-rules/import-json-policy.md`, `references/03-rules/mutation-playbook.md` |
-| Client-facing severity, reports, workbooks, cleanup plans | `references/03-rules/severity-calibration.md`, `references/03-rules/report-templates.md`, `references/03-rules/workbook-architecture.md` |
+| Client-facing severity, reports, workbooks, cleanup plans | `references/03-rules/severity-calibration.md`, `references/03-rules/human-problem-taxonomy.md`, `references/03-rules/report-templates.md`, `references/03-rules/workbook-architecture.md` |
 | Semantic summaries, proof tabs, cleanup-plan readability | `references/03-rules/summary-quality.md`, `references/03-rules/workbook-architecture.md` |
 | Change logs | `references/03-rules/change-log-template.md` |
 | Validation commands, forward-testing, and runtime QA | `references/02-commands/validation-commands.md`, `references/02-commands/forward-test-prompts.md`, `references/02-commands/runtime-qa-templates.md` |
@@ -364,7 +364,8 @@ observed browser behavior over generic descriptions.
    and gate validators when their inputs exist. If a gate fails, label the
    deliverable `Incomplete / blocked` with failed rows, blockers, risk, required
    evidence, and next action.
-36. **Apply summary-quality discipline**. Use `summary-quality.md` before
+36. **Translate operations into human problem rows**. Use
+   `human-problem-taxonomy.md` and `summary-quality.md` before
    delivering Semantic Object Matrix rows, Custom Code Review rows, cleanup
    plans, change logs, or handoffs. Proof summaries must say category,
    source/input, logic/action, output or side effect, and judgment. User-facing
@@ -487,9 +488,9 @@ observed browser behavior over generic descriptions.
 
 ## Output Expectations
 
-Use `report-templates.md`, `workbook-architecture.md`,
-`change-log-template.md`, and `summary-quality.md` for output schemas and
-wording. Keep cleanup plans and change logs end-user facing; put matrices,
-raw code/config, validator traces, and scratch reasoning in proof artifacts.
-Expose evidence freshness, coverage, semantic status, blockers, QA, route,
-rollback/publish status, deferred decisions, and a concrete next execution decision.
+Use `human-problem-taxonomy.md`, `report-templates.md`, `workbook-architecture.md`,
+`change-log-template.md`, and `summary-quality.md` for output schemas and wording.
+Keep cleanup plans and change logs end-user facing; put matrices, raw code/config,
+validator traces, and scratch reasoning in proof artifacts. Expose evidence freshness,
+coverage, semantic status, blockers, QA, route, rollback/publish status,
+deferred decisions, and a concrete next execution decision.
