@@ -31,11 +31,9 @@ from gtm_workbook import (
     load_xlsx_workbook,
     normalize_header,
     normalize_sheet_name,
-    rows_from_values,
     workbook_target_path,
     xml_text,
 )
-
 
 COUNT_FIELDS = [
     "total_source_count",

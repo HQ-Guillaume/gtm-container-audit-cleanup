@@ -26,7 +26,6 @@ from gtm_lib import (
     trigger_group_members,
 )
 
-
 COMMON_IGNORED = {"accountId", "containerId", "fingerprint", "path"}
 TAG_ID_IGNORED = COMMON_IGNORED | {"tagId", "name"}
 TAG_NORMALIZED_IGNORED = TAG_ID_IGNORED | {

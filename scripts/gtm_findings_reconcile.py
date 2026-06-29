@@ -13,7 +13,6 @@ from typing import Any
 
 from gtm_workbook import load_xlsx_workbook, normalize_header
 
-
 ACCEPTED_RESOLUTIONS = {
     "cleanup_operation",
     "documented_exception",

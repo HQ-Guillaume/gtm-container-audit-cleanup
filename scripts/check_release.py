@@ -9,7 +9,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 MAX_SKILL_LINES = 500
 LONG_REFERENCE_LINES = 100
 BLOCKLIST_FILE = "scripts/release_blocklist.txt"

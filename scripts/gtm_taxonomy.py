@@ -7,7 +7,6 @@ import json
 import re
 from typing import Any
 
-
 ECOM_RE = re.compile(
     r"ecommerce|revenue|value|price|quantity|qty|currency|tax|shipping|"
     r"transaction|product|item|sku|category|coupon",

@@ -28,7 +28,6 @@ from gtm_make_merge_patch import (
     reconstruct,
 )
 
-
 NAME_PRESERVE_LAYERS = ("tag", "trigger", "variable", "folder", "customTemplate")
 
 

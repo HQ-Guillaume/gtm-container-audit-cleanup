@@ -7,6 +7,8 @@ Use this file to decide which local checks to run and when.
 Run before committing or releasing:
 
 ```powershell
+python -m ruff check scripts
+python -B scripts/gtm_self_test.py
 python scripts/check_release.py --tag vYYYY.MM.DD
 python scripts/check_release.py --tag vYYYY.MM.DD.N --release-notes release-notes.md
 git diff --check
@@ -43,6 +45,7 @@ semantic validation, custom-code review, and cleanup-decision coverage.
 Use for the source-model map and scalable first-pass cleanup facts:
 
 ```powershell
+python scripts/gtm_audit_package_build.py container.json --out-dir audit-package --pretty
 python scripts/gtm_source_model.py container.json --pretty
 python scripts/gtm_export_inspect.py container.json
 python scripts/gtm_baseline_audit.py container.json --pretty

@@ -12,27 +12,25 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import sys
 from pathlib import Path
 from typing import Any, Iterable
 
 from gtm_audit_gate_check import (
-    CUSTOM_CODE_SUMMARY_FIELDS,
     COMPACT_D3_FIELDS,
+    CUSTOM_CODE_SUMMARY_FIELDS,
     D3_REQUIRED_FIELDS,
     SEMANTIC_SUMMARY_FIELDS,
     d3_proof_complete,
     depth_tokens,
     generic_or_blank,
     validate_baseline_rows,
-    validate_semantic_depth_rows,
     validate_placeholder_language,
     validate_rows,
+    validate_semantic_depth_rows,
     validate_summary_quality,
 )
 from gtm_lib import container_version
-from gtm_taxonomy import object_text
 from gtm_workbook import find_sheet, load_xlsx_workbook
 
 

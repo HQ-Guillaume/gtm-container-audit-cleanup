@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Tuple
 from xml.etree import ElementTree
 
-
 HEADER_ALIASES = {
     "total": "total_source_count",
     "total_count": "total_source_count",

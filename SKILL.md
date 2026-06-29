@@ -104,6 +104,8 @@ source model navigation map only -> `deterministic_findings.json`,
 `semantic_findings.json`, `technical_code_findings.json` ->
 `reconciled_operations.json` -> user-facing plan plus hidden proof tabs. Each
 lens must verify raw evidence independently before reconciliation.
+The source model cannot create, suppress, downgrade, or summarize findings; it
+only tells each lens where raw objects, fields, references, and edges are.
 
 ## Mandatory Completion Ledger
 
@@ -161,6 +163,7 @@ Load only the files required by scope:
 | Validation commands, forward-testing, and runtime QA | `references/02-commands/validation-commands.md`, `references/02-commands/forward-test-prompts.md`, `references/02-commands/runtime-qa-templates.md` |
 
 Use scripts as deterministic gates or transformers:
+`scripts/gtm_audit_package_build.py` for the default protected evidence package,
 `scripts/gtm_source_model.py` for the source-model navigation map,
 `scripts/gtm_baseline_audit.py` for protected deterministic cleanup findings,
 `scripts/gtm_custom_code_extract.py` for custom-code fact extraction and
@@ -212,8 +215,8 @@ observed browser behavior over generic descriptions.
    `execution-assurance.md`, and `audit-rubric.md`; add JSON, semantic logic,
    sources, vendor playbooks, runtime QA, mutation, or reporting references only
    when needed.
-3. **Build the source model navigation map**. Use `gtm_source_model.py` or equivalent direct export/API review to map objects, fields, trigger edges, variable sources, consumers, custom-code references, and unresolved edges.
-4. **Gate source-model coverage**. Treat the model as a map, not the evidence source. If references or edges are unresolved, mark exact blockers before trusting cleanup lenses. Do not derive cleanup decisions from the source model alone.
+3. **Build the source model navigation map**. Prefer `gtm_audit_package_build.py`; otherwise use `gtm_source_model.py` or equivalent direct export/API review to map objects, fields, trigger edges, variable sources, consumers, custom-code references, and unresolved edges.
+4. **Gate source-model coverage**. Treat the model as a map, not the evidence source. If references or edges are unresolved, mark exact blockers before trusting cleanup lenses. Do not derive cleanup decisions from the source model alone, and do not let it suppress or downgrade findings from the three independent raw-source scans.
 5. **Run the protected deterministic baseline from the source export**. Run or
    reproduce `gtm_baseline_audit.py` as a mechanical cleanup scan and preserve
    it as `deterministic_findings.json`. It must

@@ -13,7 +13,6 @@ from typing import Any
 
 from gtm_lib import container_version, refs
 
-
 URL_RE = re.compile(r"https?://[^\s\"'<>\\)]+", re.I)
 EVENT_LISTENER_RE = re.compile(r"addEventListener\s*\(\s*['\"]([^'\"]+)['\"]", re.I)
 DATA_LAYER_PUSH_RE = re.compile(r"\bdataLayer\s*\.\s*push\s*\(", re.I)

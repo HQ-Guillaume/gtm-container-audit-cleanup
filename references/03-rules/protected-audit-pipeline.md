@@ -51,6 +51,10 @@ code review may classify code risk or simplification candidates, but business
 meaning is decided in the semantic lens and the final action is decided only in
 reconciliation.
 
+The source model cannot create, suppress, downgrade, or summarize findings. Each
+lens must read or verify the raw source evidence directly, even when the package
+builder creates all artifacts in one command.
+
 ## Required Artifacts
 
 A complete cleanup plan must preserve these artifacts or equivalent workbook
@@ -63,6 +67,12 @@ tabs:
 | `semantic_findings.json` | Independent semantic source scan and object-diagnosis seeds from raw source. |
 | `technical_code_findings.json` | Custom-code technical facts, health, security, and optimization candidates from raw source. |
 | `reconciled_operations.json` | Object-matched operation packets that combine scan outputs and resolve conflicts. |
+
+Preferred export-based package command:
+
+```powershell
+python scripts/gtm_audit_package_build.py container.json --out-dir audit-package --pretty
+```
 
 The visible cleanup plan must be generated from `reconciled_operations.json` or
 an equivalent operation-packet table. Do not generate the visible cleanup plan

@@ -18,7 +18,6 @@ from typing import Any
 
 from gtm_lib import container_version, refs
 
-
 GOOGLE_RE = re.compile(r"\b(?:GA4|Google Analytics|Google Ads|gtag|GAds)\b", re.I)
 UA_RE = re.compile(
     r"\b(?:UA-\d+(?:-\d+)+|Universal Analytics|Enhanced Ecommerce|"
