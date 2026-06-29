@@ -27,7 +27,6 @@ RELEASE_NOTE_HEADINGS = (
     "known limits",
 )
 PROHIBITED_ROOT_FILES = {
-    "README.md",
     "CHANGELOG.md",
     "INSTALLATION_GUIDE.md",
     "QUICK_REFERENCE.md",
@@ -39,7 +38,7 @@ def repo_root() -> Path:
 
 
 def text_files(root: Path) -> list[Path]:
-    paths = [root / "SKILL.md", root / "agents" / "openai.yaml"]
+    paths = [root / "README.md", root / "SKILL.md", root / "agents" / "openai.yaml"]
     paths.extend(sorted((root / "references").rglob("*.md")))
     paths.extend(sorted((root / "scripts").glob("*.py")))
     return [path for path in paths if path.exists()]
@@ -84,6 +83,8 @@ def referenced_resources(root: Path) -> tuple[set[str], list[str]]:
         for match in pattern.finditer(content):
             raw = " ".join(match.group(1).split())
             rel = raw.split()[0].strip().rstrip(".,;:)")
+            if rel.endswith("/") or (root / rel).is_dir():
+                continue
             if "*" in rel:
                 continue
             refs.add(rel)
@@ -178,7 +179,7 @@ def check_forbidden_skill_files(root: Path) -> list[str]:
     for filename in sorted(PROHIBITED_ROOT_FILES):
         if (root / filename).exists():
             errors.append(
-                f"{filename} is not allowed in a skill package; keep guidance in SKILL.md or references/"
+                f"{filename} is not allowed in this repo; keep operational guidance in SKILL.md, references/, or README.md"
             )
     return errors
 
